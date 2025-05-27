@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Proveedores - Sistema de Cafetería</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>Sistema de Cafetería</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="productos.html" class="nav-item">Productos</a></li>
+                <li><a href="inventario.html" class="nav-item">Inventario</a></li>
+                <li><a href="proveedores.html" class="nav-item active">Proveedores</a></li>
+                <li><a href="ventas.html" class="nav-item">Ventas</a></li>
+            </ul>
+            <div class="user-info">
+                <span class="user-name">Usuario: Empleado</span>
+                <a href="../auth/login.html" class="logout-button">Cerrar Sesión</a>
+            </div>
+        </nav>
+        
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Gestión de Proveedores</h1>
+                <button class="add-button" onclick="mostrarFormulario()">Agregar Proveedor</button>
+            </header>
+            
+            <div class="search-filters">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Buscar proveedor...">
+                    <button class="search-button" onclick="filtrarProveedores()">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+                
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label for="filterCategory">Categoría de Producto</label>
+                        <select id="filterCategory">
+                            <option value="">Todas las categorías</option>
+                            <option value="cafe">Café</option>
+                            <option value="postres">Postres</option>
+                            <option value="bebidas">Bebidas</option>
+                            <option value="insumos">Insumos</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filterStatus">Estado</label>
+                        <select id="filterStatus">
+                            <option value="">Todos los estados</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="filterRating">Calificación</label>
+                        <select id="filterRating">
+                            <option value="">Todas las calificaciones</option>
+                            <option value="5">5 estrellas</option>
+                            <option value="4">4+ estrellas</option>
+                            <option value="3">3+ estrellas</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="suppliers-table-container">
+                <table class="suppliers-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Contacto</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Categoría</th>
+                            <th>Calificación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Café del Sur</td>
+                            <td>Juan Pérez</td>
+                            <td>555-0101</td>
+                            <td>contacto@cafedelsur.com</td>
+                            <td>Café</td>
+                            <td>
+                                <div class="rating">
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star">★</span>
+                                </div>
+                            </td>
+                            <td><span class="status active">Activo</span></td>
+                            <td>
+                                <button class="action-button edit">Editar</button>
+                                <button class="action-button delete">Eliminar</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Dulces y Postres</td>
+                            <td>María García</td>
+                            <td>555-0102</td>
+                            <td>ventas@dulcesypostres.com</td>
+                            <td>Postres</td>
+                            <td>
+                                <div class="rating">
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                    <span class="star filled">★</span>
+                                </div>
+                            </td>
+                            <td><span class="status active">Activo</span></td>
+                            <td>
+                                <button class="action-button edit">Editar</button>
+                                <button class="action-button delete">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal para agregar/editar proveedor -->
+            <div id="supplierModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>Agregar Proveedor</h2>
+                    <form id="supplierForm">
+                        <div class="form-group">
+                            <label for="nombre">Nombre de la Empresa</label>
+                            <input type="text" id="nombre" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contacto">Nombre del Contacto</label>
+                            <input type="text" id="contacto" name="contacto" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoria">Categoría de Producto</label>
+                            <select id="categoria" name="categoria" required>
+                                <option value="cafe">Café</option>
+                                <option value="postres">Postres</option>
+                                <option value="bebidas">Bebidas</option>
+                                <option value="insumos">Insumos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="direccion">Dirección</label>
+                            <textarea id="direccion" name="direccion" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="notas">Notas Adicionales</label>
+                            <textarea id="notas" name="notas" rows="3"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="submit-button">Guardar</button>
+                            <button type="button" class="cancel-button" onclick="cerrarModal()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        // Funciones para el modal
+        function mostrarFormulario() {
+            document.getElementById('supplierModal').style.display = 'block';
+        }
+
+        function cerrarModal() {
+            document.getElementById('supplierModal').style.display = 'none';
+        }
+
+        // Cerrar modal al hacer clic en el botón de cerrar
+        document.querySelector('.close-button').onclick = cerrarModal;
+
+        // Cerrar modal al hacer clic fuera del contenido
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('supplierModal')) {
+                cerrarModal();
+            }
+        }
+
+        // Manejo del formulario
+        document.getElementById('supplierForm').onsubmit = function(e) {
+            e.preventDefault();
+            // Aquí iría la lógica para guardar el proveedor
+            cerrarModal();
+        }
+
+        // Búsqueda y filtrado
+        function filtrarProveedores() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const filterCategory = document.getElementById('filterCategory').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+            const filterRating = document.getElementById('filterRating').value;
+            const rows = document.querySelectorAll('.suppliers-table tbody tr');
+
+            rows.forEach(row => {
+                const nombre = row.cells[1].textContent.toLowerCase();
+                const categoria = row.cells[5].textContent.toLowerCase();
+                const estado = row.cells[7].textContent.toLowerCase();
+                const rating = row.querySelector('.rating').querySelectorAll('.star.filled').length;
+                
+                const matchesSearch = nombre.includes(searchText);
+                const matchesCategory = !filterCategory || categoria.includes(filterCategory.toLowerCase());
+                const matchesStatus = !filterStatus || estado.includes(filterStatus.toLowerCase());
+                const matchesRating = !filterRating || rating >= parseInt(filterRating);
+
+                row.style.display = matchesSearch && matchesCategory && matchesStatus && matchesRating ? '' : 'none';
+            });
+        }
+
+        // Aplicar filtros cuando cambien los selectores
+        document.getElementById('filterCategory').onchange = filtrarProveedores;
+        document.getElementById('filterStatus').onchange = filtrarProveedores;
+        document.getElementById('filterRating').onchange = filtrarProveedores;
+
+        // Manejo de botones de acción
+        document.querySelectorAll('.action-button.edit').forEach(button => {
+            button.onclick = function() {
+                const row = this.closest('tr');
+                // Aquí iría la lógica para cargar los datos del proveedor en el formulario
+                mostrarFormulario();
+            }
+        });
+
+        document.querySelectorAll('.action-button.delete').forEach(button => {
+            button.onclick = function() {
+                if (confirm('¿Está seguro de que desea eliminar este proveedor?')) {
+                    // Aquí iría la lógica para eliminar el proveedor
+                    this.closest('tr').remove();
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

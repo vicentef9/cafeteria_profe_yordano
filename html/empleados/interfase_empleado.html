@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Cafetería</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>Sistema de Cafetería</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="productos.html" class="nav-item">Productos</a></li>
+                <li><a href="inventario.html" class="nav-item">Inventario</a></li>
+                <li><a href="proveedores.html" class="nav-item">Proveedores</a></li>
+                <li><a href="ventas.html" class="nav-item">Ventas</a></li>
+            </ul>
+            <div class="user-info">
+                <span class="user-name">Usuario: Empleado</span>
+                <a href="../auth/login.html" class="logout-button">Cerrar Sesión</a>
+            </div>
+        </nav>
+        
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Bienvenido al Sistema</h1>
+            </header>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h3>Productos</h3>
+                    <p>Gestiona el catálogo de productos</p>
+                    <a href="productos.html" class="card-link">Acceder</a>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3>Inventario</h3>
+                    <p>Control de existencias y descuentos</p>
+                    <a href="inventario.html" class="card-link">Acceder</a>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3>Proveedores</h3>
+                    <p>Gestión de proveedores</p>
+                    <a href="proveedores.html" class="card-link">Acceder</a>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3>Ventas</h3>
+                    <p>Registro de ventas</p>
+                    <a href="ventas.html" class="card-link">Acceder</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html> 

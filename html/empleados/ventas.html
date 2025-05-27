@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Ventas - Sistema de Cafetería</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>Sistema de Cafetería</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="productos.html" class="nav-item">Productos</a></li>
+                <li><a href="inventario.html" class="nav-item">Inventario</a></li>
+                <li><a href="proveedores.html" class="nav-item">Proveedores</a></li>
+                <li><a href="ventas.html" class="nav-item active">Ventas</a></li>
+            </ul>
+            <div class="user-info">
+                <span class="user-name">Usuario: Empleado</span>
+                <a href="../auth/login.html" class="logout-button">Cerrar Sesión</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="dashboard-header">
+            <h1>Gestión de Ventas</h1>
+            <button class="add-button" onclick="mostrarFormulario()">Nueva Venta</button>
+        </section>
+
+        <section class="sales-summary">
+            <div class="summary-card">
+                <h3>Ventas del Día</h3>
+                <p class="amount">$1,250.00</p>
+            </div>
+            <div class="summary-card">
+                <h3>Ventas del Mes</h3>
+                <p class="amount">$25,500.00</p>
+            </div>
+            <div class="summary-card">
+                <h3>Productos Vendidos</h3>
+                <p class="amount">150</p>
+            </div>
+            <div class="summary-card">
+                <h3>Ticket Promedio</h3>
+                <p class="amount">$8.33</p>
+            </div>
+        </section>
+
+        <section class="search-filters">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Buscar venta...">
+                <button class="search-button" onclick="filtrarVentas()">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+            </div>
+
+            <div class="filters-container">
+                <div class="filter-group">
+                    <label for="filterDate">Fecha</label>
+                    <input type="date" id="filterDate">
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterPayment">Método de Pago</label>
+                    <select id="filterPayment">
+                        <option value="">Todos</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="tarjeta">Tarjeta</option>
+                        <option value="transferencia">Transferencia</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filterStatus">Estado</label>
+                    <select id="filterStatus">
+                        <option value="">Todos</option>
+                        <option value="completada">Completada</option>
+                        <option value="cancelada">Cancelada</option>
+                        <option value="pendiente">Pendiente</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="sales-table-container">
+            <h2>Registro de Ventas</h2>
+            <ol class="sales-list">
+                <li>
+            <table class="sales-table">
+                <tr>
+                    <th>ID Venta</th>
+                    <th>Fecha</th>
+                    <th>Productos</th>
+                    <th>Total</th>
+                    <th>Método de Pago</th>
+                    <th>Estado</th>
+                    <th>Empleado</th>
+                    <th>Acciones</th>
+                </tr>
+                <tr>
+                    <td>#001</td>
+                    <td>2024-03-20 14:30</td>
+                    <td>
+                        <button class="view-details" onclick="mostrarDetalles(1)">Ver Detalles</button>
+                    </td>
+                    <td>$25.50</td>
+                    <td>Tarjeta</td>
+                    <td><span class="status completada">Completada</span></td>
+                    <td>Juan Pérez</td>
+                    <td>
+                        <button class="action-button view" onclick="mostrarDetalles(1)">Ver</button>
+                        <button class="action-button print" onclick="imprimirTicket(1)">Imprimir</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>#002</td>
+                    <td>2024-03-20 15:15</td>
+                    <td>
+                        <button class="view-details" onclick="mostrarDetalles(2)">Ver Detalles</button>
+                    </td>
+                    <td>$18.75</td>
+                    <td>Efectivo</td>
+                    <td><span class="status completada">Completada</span></td>
+                    <td>María García</td>
+                    <td>
+                        <button class="action-button view" onclick="mostrarDetalles(2)">Ver</button>
+                        <button class="action-button print" onclick="imprimirTicket(2)">Imprimir</button>
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="productos-populares">
+            <h2>Productos Más Vendidos</h2>
+            <ol>
+                <li>Café Americano - 150 ventas</li>
+                <li>Capuccino - 120 ventas</li>
+                <li>Croissant - 100 ventas</li>
+                <li>Té Verde - 80 ventas</li>
+            </ol>
+        </section>
+
+        <section class="metodos-pago">
+            <h2>Métodos de Pago Disponibles</h2>
+            <ul>
+                <li>Efectivo</li>
+                <li>Tarjeta de Crédito/Débito</li>
+                <li>Transferencia Bancaria</li>
+            </ul>
+        </section>
+
+        <!-- Modal para nueva venta -->
+        <div id="saleModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="cerrarModal()">&times;</span>
+                <h2>Nueva Venta</h2>
+                <form id="saleForm" onsubmit="procesarVenta(event)">
+                    <div class="form-group">
+                        <label for="producto">Producto</label>
+                        <select id="producto" name="producto" required onchange="actualizarPrecio()">
+                            <option value="">Seleccionar producto...</option>
+                            <option value="1">Café Americano - $2.50</option>
+                            <option value="2">Croissant - $1.80</option>
+                            <option value="3">Capuccino - $3.00</option>
+                            <option value="4">Té Verde - $2.00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cantidad">Cantidad</label>
+                        <input type="number" id="cantidad" name="cantidad" min="1" value="1" required onchange="actualizarTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label for="metodoPago">Método de Pago</label>
+                        <select id="metodoPago" name="metodoPago" required>
+                            <option value="efectivo">Efectivo</option>
+                            <option value="tarjeta">Tarjeta</option>
+                            <option value="transferencia">Transferencia</option>
+                        </select>
+                    </div>
+                    <div class="cart-summary">
+                        <h3>Resumen de la Venta</h3>
+                        <div id="cartItems">
+                            <!-- Los items se agregarán dinámicamente -->
+                        </div>
+                        <div class="cart-total">
+                            <span>Total:</span>
+                            <span id="totalAmount">$0.00</span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="submit-button">Completar Venta</button>
+                        <button type="button" class="cancel-button" onclick="cerrarModal()">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal para ver detalles de venta -->
+        <div id="detailsModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button" onclick="cerrarModal()">&times;</span>
+                <h2>Detalles de la Venta</h2>
+                <div class="sale-details">
+                    <div class="detail-group">
+                        <label>ID Venta:</label>
+                        <span id="detailId">#001</span>
+                    </div>
+                    <div class="detail-group">
+                        <label>Fecha:</label>
+                        <span id="detailDate">2024-03-20 14:30</span>
+                    </div>
+                    <div class="detail-group">
+                        <label>Empleado:</label>
+                        <span id="detailEmployee">Juan Pérez</span>
+                    </div>
+                    <div class="detail-group">
+                        <label>Método de Pago:</label>
+                        <span id="detailPayment">Tarjeta</span>
+                    </div>
+                    <div class="detail-items">
+                        <h3>Productos</h3>
+                        <table class="details-table">
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unit.</th>
+                                <th>Subtotal</th>
+                            </tr>
+                            <tbody id="detailItems">
+                                <!-- Los items se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="detail-total">
+                        <span>Total:</span>
+                        <span id="detailTotal">$25.50</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Horario de Atención</h3>
+                <ul>
+                    <li>Lunes a Viernes: 7:00 AM - 8:00 PM</li>
+                    <li>Sábados: 8:00 AM - 6:00 PM</li>
+                    <li>Domingos: 9:00 AM - 4:00 PM</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul>
+                    <li>Teléfono: (123) 456-7890</li>
+                    <li>Email: info@cafeteria.com</li>
+                    <li>Dirección: Calle Principal #123</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="productos.html">Productos</a></li>
+                    <li><a href="inventario.html">Inventario</a></li>
+                    <li><a href="proveedores.html">Proveedores</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Sistema de Cafetería. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Variables globales
+        let carrito = [];
+        let ventas = [
+            {
+                id: 1,
+                fecha: '2024-03-20 14:30',
+                productos: [
+                    { nombre: 'Café Americano', cantidad: 2, precio: 2.50, subtotal: 5.00 },
+                    { nombre: 'Croissant', cantidad: 1, precio: 1.80, subtotal: 1.80 }
+                ],
+                total: 25.50,
+                metodoPago: 'Tarjeta',
+                estado: 'completada',
+                empleado: 'Juan Pérez'
+            },
+            {
+                id: 2,
+                fecha: '2024-03-20 15:15',
+                productos: [
+                    { nombre: 'Capuccino', cantidad: 1, precio: 3.00, subtotal: 3.00 },
+                    { nombre: 'Té Verde', cantidad: 2, precio: 2.00, subtotal: 4.00 }
+                ],
+                total: 18.75,
+                metodoPago: 'Efectivo',
+                estado: 'completada',
+                empleado: 'María García'
+            }
+        ];
+
+        // Funciones para el modal de nueva venta
+        function mostrarFormulario() {
+            document.getElementById('saleModal').style.display = 'block';
+            carrito = [];
+            actualizarCarrito();
+        }
+
+        function cerrarModal() {
+            document.getElementById('saleModal').style.display = 'none';
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        function actualizarPrecio() {
+            const producto = document.getElementById('producto');
+            const cantidad = document.getElementById('cantidad');
+            if (producto.value) {
+                const precio = parseFloat(producto.options[producto.selectedIndex].text.split('$')[1]);
+                const cantidad = parseInt(document.getElementById('cantidad').value);
+                actualizarTotal();
+            }
+        }
+
+        function actualizarTotal() {
+            const producto = document.getElementById('producto');
+            const cantidad = document.getElementById('cantidad');
+            if (producto.value) {
+                const precio = parseFloat(producto.options[producto.selectedIndex].text.split('$')[1]);
+                const cantidad = parseInt(document.getElementById('cantidad').value);
+                const total = precio * cantidad;
+                document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+            }
+        }
+
+        function agregarAlCarrito() {
+            const producto = document.getElementById('producto');
+            const cantidad = document.getElementById('cantidad');
+            
+            if (producto.value && cantidad.value) {
+                const nombre = producto.options[producto.selectedIndex].text.split(' - ')[0];
+                const precio = parseFloat(producto.options[producto.selectedIndex].text.split('$')[1]);
+                const cantidad = parseInt(document.getElementById('cantidad').value);
+                
+                carrito.push({
+                    nombre,
+                    cantidad,
+                    precio,
+                    subtotal: precio * cantidad
+                });
+                
+                actualizarCarrito();
+                producto.value = '';
+                cantidad.value = 1;
+            }
+        }
+
+        function actualizarCarrito() {
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+            let total = 0;
+
+            carrito.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <span>${item.nombre} x${item.cantidad}</span>
+                    <span>$${item.subtotal.toFixed(2)}</span>
+                    <button onclick="eliminarDelCarrito(${index})">Eliminar</button>
+                `;
+                cartItems.appendChild(itemElement);
+                total += item.subtotal;
+            });
+
+            document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function eliminarDelCarrito(index) {
+            carrito.splice(index, 1);
+            actualizarCarrito();
+        }
+
+        function procesarVenta(event) {
+            event.preventDefault();
+            const metodoPago = document.getElementById('metodoPago').value;
+            
+            if (carrito.length > 0) {
+                const nuevaVenta = {
+                    id: ventas.length + 1,
+                    fecha: new Date().toLocaleString(),
+                    productos: [...carrito],
+                    total: carrito.reduce((sum, item) => sum + item.subtotal, 0),
+                    metodoPago,
+                    estado: 'completada',
+                    empleado: 'Empleado Actual' // Esto debería venir de la sesión
+                };
+                
+                ventas.push(nuevaVenta);
+                actualizarTablaVentas();
+                cerrarModal();
+                alert('Venta procesada con éxito');
+            }
+        }
+
+        // Funciones para ver detalles de venta
+        function mostrarDetalles(ventaId) {
+            const venta = ventas.find(v => v.id === ventaId);
+            if (venta) {
+                document.getElementById('detailId').textContent = `#${venta.id.toString().padStart(3, '0')}`;
+                document.getElementById('detailDate').textContent = venta.fecha;
+                document.getElementById('detailEmployee').textContent = venta.empleado;
+                document.getElementById('detailPayment').textContent = venta.metodoPago;
+                
+                const detailItems = document.getElementById('detailItems');
+                detailItems.innerHTML = '';
+                
+                venta.productos.forEach(producto => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${producto.nombre}</td>
+                        <td>${producto.cantidad}</td>
+                        <td>$${producto.precio.toFixed(2)}</td>
+                        <td>$${producto.subtotal.toFixed(2)}</td>
+                    `;
+                    detailItems.appendChild(row);
+                });
+                
+                document.getElementById('detailTotal').textContent = `$${venta.total.toFixed(2)}`;
+                document.getElementById('detailsModal').style.display = 'block';
+            }
+        }
+
+        function imprimirTicket(ventaId) {
+            const venta = ventas.find(v => v.id === ventaId);
+            if (venta) {
+                const ticket = `
+                    ============================
+                    TICKET DE VENTA
+                    ============================
+                    ID: #${venta.id.toString().padStart(3, '0')}
+                    Fecha: ${venta.fecha}
+                    Empleado: ${venta.empleado}
+                    Método de Pago: ${venta.metodoPago}
+                    ============================
+                    ${venta.productos.map(p => 
+                        `${p.nombre} x${p.cantidad} - $${p.subtotal.toFixed(2)}`
+                    ).join('\n')}
+                    ============================
+                    Total: $${venta.total.toFixed(2)}
+                    ============================
+                    ¡Gracias por su compra!
+                `;
+                
+                const ventanaImpresion = window.open('', '_blank');
+                ventanaImpresion.document.write(`
+                    <html>
+                        <head>
+                            <title>Ticket de Venta</title>
+                            <style>
+                                body { font-family: monospace; white-space: pre; }
+                            </style>
+                        </head>
+                        <body>${ticket}</body>
+                    </html>
+                `);
+                ventanaImpresion.document.close();
+                ventanaImpresion.print();
+            }
+        }
+
+        // Funciones de búsqueda y filtrado
+        function filtrarVentas() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const filterDate = document.getElementById('filterDate').value;
+            const filterPayment = document.getElementById('filterPayment').value;
+            const filterStatus = document.getElementById('filterStatus').value;
+            
+            const ventasFiltradas = ventas.filter(venta => {
+                const matchesSearch = venta.id.toString().includes(searchText) ||
+                                    venta.empleado.toLowerCase().includes(searchText);
+                const matchesDate = !filterDate || venta.fecha.includes(filterDate);
+                const matchesPayment = !filterPayment || venta.metodoPago.toLowerCase() === filterPayment.toLowerCase();
+                const matchesStatus = !filterStatus || venta.estado.toLowerCase() === filterStatus.toLowerCase();
+                
+                return matchesSearch && matchesDate && matchesPayment && matchesStatus;
+            });
+            
+            actualizarTablaVentas(ventasFiltradas);
+        }
+
+        function actualizarTablaVentas(ventasAMostrar = ventas) {
+            const tbody = document.querySelector('.sales-table tbody');
+            tbody.innerHTML = '';
+            
+            ventasAMostrar.forEach(venta => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${venta.id.toString().padStart(3, '0')}</td>
+                    <td>${venta.fecha}</td>
+                    <td>
+                        <button class="view-details" onclick="mostrarDetalles(${venta.id})">Ver Detalles</button>
+                    </td>
+                    <td>$${venta.total.toFixed(2)}</td>
+                    <td>${venta.metodoPago}</td>
+                    <td><span class="status ${venta.estado}">${venta.estado}</span></td>
+                    <td>${venta.empleado}</td>
+                    <td>
+                        <button class="action-button view" onclick="mostrarDetalles(${venta.id})">Ver</button>
+                        <button class="action-button print" onclick="imprimirTicket(${venta.id})">Imprimir</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            actualizarTablaVentas();
+            
+            // Event listeners para filtros
+            document.getElementById('searchInput').addEventListener('input', filtrarVentas);
+            document.getElementById('filterDate').addEventListener('change', filtrarVentas);
+            document.getElementById('filterPayment').addEventListener('change', filtrarVentas);
+            document.getElementById('filterStatus').addEventListener('change', filtrarVentas);
+        });
+    </script>
+</body>
+</html> 

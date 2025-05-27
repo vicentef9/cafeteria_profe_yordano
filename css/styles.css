@@ -1,0 +1,814 @@
+/* =========================================
+   Variables y estilos base
+   ========================================= */
+:root {
+    --primary-color: #8B4513;    /* Marrón café */
+    --secondary-color: #D2691E;  /* Naranja pastel */
+    --background-color: #FFF8DC; /* Crema suave */
+    --text-color: #4A3728;       /* Marrón oscuro */
+    --error-color: #CD5C5C;      /* Rojo suave */
+    --success-color: #90EE90;    /* Verde suave */
+    --sidebar-width: 250px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* =========================================
+   Estilos de Login
+   ========================================= */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(139, 69, 19, 0.1);
+}
+
+.login-box h1 {
+    text-align: center;
+    color: var(--secondary-color);
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.login-button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #6B3410;
+}
+
+/* =========================================
+   Estilos del Dashboard (Layout General)
+   ========================================= */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.logo h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-menu {
+    list-style: none;
+}
+
+.nav-item {
+    display: block;
+    padding: 0.8rem 1rem;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.user-name {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.logout-button {
+    color: white;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    padding: 0.5rem;
+    background-color: var(--error-color);
+    border-radius: 5px;
+}
+
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 2rem;
+    width: calc(100% - var(--sidebar-width));
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.add-button {
+    padding: 0.8rem 1.5rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #B85C1E;
+}
+
+/* =========================================
+   Estilos de Empleados
+   ========================================= */
+.employees-table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
+    overflow-x: auto;
+}
+
+.employees-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.employees-table th,
+.employees-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.employees-table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.employees-table tr:hover {
+    background-color: #FFF8DC;
+}
+
+/* =========================================
+   Estilos de Productos
+   ========================================= */
+.products-table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.products-table th,
+.products-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.products-table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.products-table tr:hover {
+    background-color: #FFF8DC;
+}
+
+#productForm textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 100px;
+}
+
+#productForm input[type="file"] {
+    padding: 0.5rem;
+    border: 1px dashed #ddd;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+}
+
+#productForm input[type="number"] {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* =========================================
+   Estilos de Proveedores
+   ========================================= */
+.search-filters {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.search-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.search-button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.filters-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.filter-group select {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.suppliers-table-container {
+    overflow-x: auto;
+}
+
+.suppliers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.suppliers-table th,
+.suppliers-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.suppliers-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.suppliers-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.rating {
+    color: #ffc107;
+}
+
+.star {
+    font-size: 1.2rem;
+}
+
+.star.filled {
+    color: #ffc107;
+}
+
+/* =========================================
+   Estilos de Inventario
+   ========================================= */
+.inventory-table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.inventory-table th,
+.inventory-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.inventory-table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.inventory-table tr:hover {
+    background-color: #FFF8DC;
+}
+
+.discount-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.discount-badge:empty {
+    display: none;
+}
+
+.discount-preview {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    color: #495057;
+}
+
+.discount-preview span:last-child {
+    font-weight: 600;
+    color: #28a745;
+}
+
+/* =========================================
+   Estilos de Ventas
+   ========================================= */
+.sales-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.summary-card h3 {
+    color: var(--text-color);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.summary-card .amount {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.sales-table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sales-table th,
+.sales-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.sales-table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.sales-table tr:hover {
+    background-color: #FFF8DC;
+}
+
+.view-details {
+    padding: 0.25rem 0.5rem;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.view-details:hover {
+    background-color: #bbdefb;
+}
+
+/* =========================================
+   Estilos de Carrito de Venta
+   ========================================= */
+.cart-summary {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.cart-summary h3 {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
+    font-weight: 600;
+}
+
+/* =========================================
+   Estilos de Detalles de Venta
+   ========================================= */
+.sale-details {
+    padding: 1rem;
+}
+
+.detail-group {
+    margin-bottom: 1rem;
+}
+
+.detail-group label {
+    font-weight: 500;
+    color: var(--text-color);
+    margin-right: 0.5rem;
+}
+
+.detail-items {
+    margin: 1.5rem 0;
+}
+
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.details-table th,
+.details-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.details-table th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+}
+
+.detail-total {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.detail-total span:last-child {
+    margin-left: 1rem;
+    color: var(--primary-color);
+}
+
+/* =========================================
+   Estilos de Modales (Comunes)
+   ========================================= */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    background-color: white;
+    margin: 5% auto;
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.submit-button,
+.cancel-button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.cancel-button {
+    background-color: #666;
+    color: white;
+}
+
+.submit-button:hover,
+.cancel-button:hover {
+    opacity: 0.9;
+}
+
+/* =========================================
+   Estilos de Estados (Comunes)
+   ========================================= */
+.status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.status.active {
+    background-color: var(--success-color);
+    color: #2E7D32;
+}
+
+.status.inactive {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.status.completada {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status.cancelada {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status.pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status.bajo {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status.normal {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status.alto {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+/* =========================================
+   Estilos de Botones de Acción (Comunes)
+   ========================================= */
+.action-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.action-button.edit {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.action-button.delete {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.action-button.print {
+    background-color: #6c757d;
+    color: white;
+}
+
+.action-button:hover {
+    opacity: 0.9;
+}
+
+/* =========================================
+   Estilos Responsivos
+   ========================================= */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .dashboard-container {
+        flex-direction: column;
+    }
+    
+    .user-info {
+        position: relative;
+    }
+
+    .employees-table th,
+    .employees-table td,
+    .products-table th,
+    .products-table td,
+    .inventory-table th,
+    .inventory-table td,
+    .sales-table th,
+    .sales-table td {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .products-table th:nth-child(3),
+    .products-table td:nth-child(3),
+    .products-table th:nth-child(4),
+    .products-table td:nth-child(4),
+    .inventory-table th:nth-child(4),
+    .inventory-table td:nth-child(4),
+    .inventory-table th:nth-child(5),
+    .inventory-table td:nth-child(5),
+    .sales-table th:nth-child(4),
+    .sales-table td:nth-child(4),
+    .sales-table th:nth-child(5),
+    .sales-table td:nth-child(5) {
+        display: none;
+    }
+
+    .action-button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .summary-card {
+        padding: 1rem;
+    }
+
+    .summary-card .amount {
+        font-size: 1.2rem;
+    }
+
+    .modal-content {
+        margin: 10% auto;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-box {
+        padding: 1.5rem;
+    }
+    
+    .login-box h1 {
+        font-size: 1.5rem;
+    }
+} 
