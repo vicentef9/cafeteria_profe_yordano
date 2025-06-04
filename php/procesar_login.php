@@ -3,32 +3,46 @@ session_start();
 require_once 'conexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $email = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    try {
-        $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE username = :username AND password = :password");
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
-        $stmt->execute();
+    if (!empty($email) && !empty($password)) {
+        try {
+            // Buscar el usuario en la base de datos
+            $stmt = $conn->prepare("SELECT id, nombre, apellido, email, password, rol FROM empleados WHERE email = ? AND estado = 'activo'");
+            $stmt->execute([$email]);
+            $usuario = $stmt->fetch();
 
-        if ($stmt->rowCount() > 0) {
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-            $_SESSION['usuario_id'] = $usuario['id'];
-            $_SESSION['tipo_usuario'] = $usuario['tipo_usuario'];
-            
-            if ($usuario['tipo_usuario'] == 'admin') {
-                header("Location: ../html/admin/empleados.html");
+            if ($usuario && password_verify($password, $usuario['password'])) {
+                // Iniciar sesión
+                $_SESSION['usuario_id'] = $usuario['id'];
+                $_SESSION['nombre_usuario'] = $usuario['nombre'] . ' ' . $usuario['apellido'];
+                $_SESSION['rol'] = $usuario['rol'];
+
+                // Redirigir según el rol
+                if ($usuario['rol'] === 'admin') {
+                    header("Location: ../html/admin/interfase_administrador.html");
+                } else {
+                    header("Location: ../html/empleados/interfase_empleado.html");
+                }
+                exit();
             } else {
-                header("Location: ../html/usuario/interfase_empleado.html");
+                $_SESSION['error'] = "Credenciales inválidas o usuario inactivo";
+                header("Location: ../html/autenticacion/login.php");
+                exit();
             }
-            exit();
-        } else {
-            header("Location: ../html/autenticacion/login.html?error=1");
+        } catch (PDOException $e) {
+            $_SESSION['error'] = "Error al procesar el login: " . $e->getMessage();
+            header("Location: ../html/autenticacion/login.php");
             exit();
         }
-    } catch(PDOException $e) {
-        echo "Error: " . $e->getMessage();
+    } else {
+        $_SESSION['error'] = "Por favor, complete todos los campos";
+        header("Location: ../html/autenticacion/login.php");
+        exit();
     }
+} else {
+    header("Location: ../html/autenticacion/login.php");
+    exit();
 }
 ?> 

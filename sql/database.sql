@@ -11,4 +11,8 @@ CREATE TABLE IF NOT EXISTS empleados (
     estado ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo',
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-); 
+);
+
+INSERT INTO empleados (nombre, apellido, email, password, rol, estado)
+VALUES ('Admin', 'Sistema', 'admin@cafeteria.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 'activo')
+ON DUPLICATE KEY UPDATE id=id; 
