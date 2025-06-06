@@ -1,3 +1,31 @@
+<?php
+session_start();
+require_once '../../config/database.php';
+
+// Verificar si el usuario está logueado
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: ../autenticacion/login.php');
+    exit();
+}
+
+// Obtener el rol del usuario
+$rol = $_SESSION['rol'];
+
+// Verificar si el usuario tiene permisos para acceder a esta página
+if ($rol !== 'empleado' && $rol !== 'admin') {
+    header('Location: ../autenticacion/login.php');
+    exit();
+}
+
+// Obtener productos disponibles
+$query_productos = "SELECT p.*, i.precio_base, i.stock_actual 
+                   FROM productos p 
+                   JOIN inventario i ON p.id = i.producto_id 
+                   WHERE i.stock_actual > 0";
+$stmt_productos = $conn->prepare($query_productos);
+$stmt_productos->execute();
+$productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -20,7 +48,7 @@
                 <li><a href="ventas.php" class="nav-item active">Ventas</a></li>
             </ul>
             <div class="user-info">
-                <span class="user-name">Usuario: Empleado</span>
+                <span class="user-name">Usuario: <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'Empleado'); ?></span>
                 <a href="../autenticacion/login.php" class="logout-button">Cerrar Sesión</a>
             </div>
         </nav>
@@ -35,19 +63,19 @@
         <section class="sales-summary">
             <div class="summary-card">
                 <h3>Ventas del Día</h3>
-                <p class="amount">$1,250.00</p>
+                <p class="amount" id="ventasDia">$0.00</p>
             </div>
             <div class="summary-card">
                 <h3>Ventas del Mes</h3>
-                <p class="amount">$25,500.00</p>
+                <p class="amount" id="ventasMes">$0.00</p>
             </div>
             <div class="summary-card">
                 <h3>Productos Vendidos</h3>
-                <p class="amount">150</p>
+                <p class="amount" id="productosVendidos">0</p>
             </div>
             <div class="summary-card">
                 <h3>Ticket Promedio</h3>
-                <p class="amount">$8.33</p>
+                <p class="amount" id="ticketPromedio">$0.00</p>
             </div>
         </section>
 
@@ -89,69 +117,30 @@
 
         <section class="sales-table-container">
             <h2>Registro de Ventas</h2>
-            <ol class="sales-list">
-                <li>
             <table class="sales-table">
-                <tr>
-                    <th>ID Venta</th>
-                    <th>Fecha</th>
-                    <th>Productos</th>
-                    <th>Total</th>
-                    <th>Método de Pago</th>
-                    <th>Estado</th>
-                    <th>Empleado</th>
-                    <th>Acciones</th>
-                </tr>
-                <tr>
-                    <td>#001</td>
-                    <td>2024-03-20 14:30</td>
-                    <td>
-                        <button class="view-details" onclick="mostrarDetalles(1)">Ver Detalles</button>
-                    </td>
-                    <td>$25.50</td>
-                    <td>Tarjeta</td>
-                    <td><span class="status completada">Completada</span></td>
-                    <td>Juan Pérez</td>
-                    <td>
-                        <button class="action-button view" onclick="mostrarDetalles(1)">Ver</button>
-                        <button class="action-button print" onclick="imprimirTicket(1)">Imprimir</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>#002</td>
-                    <td>2024-03-20 15:15</td>
-                    <td>
-                        <button class="view-details" onclick="mostrarDetalles(2)">Ver Detalles</button>
-                    </td>
-                    <td>$18.75</td>
-                    <td>Efectivo</td>
-                    <td><span class="status completada">Completada</span></td>
-                    <td>María García</td>
-                    <td>
-                        <button class="action-button view" onclick="mostrarDetalles(2)">Ver</button>
-                        <button class="action-button print" onclick="imprimirTicket(2)">Imprimir</button>
-                    </td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>ID Venta</th>
+                        <th>Fecha</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                        <th>Método de Pago</th>
+                        <th>Estado</th>
+                        <th>Empleado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ventasTableBody">
+                    <!-- Los datos se cargarán dinámicamente -->
+                </tbody>
             </table>
         </section>
 
         <section class="productos-populares">
             <h2>Productos Más Vendidos</h2>
-            <ol>
-                <li>Café Americano - 150 ventas</li>
-                <li>Capuccino - 120 ventas</li>
-                <li>Croissant - 100 ventas</li>
-                <li>Té Verde - 80 ventas</li>
+            <ol id="productosPopulares">
+                <!-- Los datos se cargarán dinámicamente -->
             </ol>
-        </section>
-
-        <section class="metodos-pago">
-            <h2>Métodos de Pago Disponibles</h2>
-            <ul>
-                <li>Efectivo</li>
-                <li>Tarjeta de Crédito/Débito</li>
-                <li>Transferencia Bancaria</li>
-            </ul>
         </section>
 
         <!-- Modal para nueva venta -->
@@ -164,10 +153,13 @@
                         <label for="producto">Producto</label>
                         <select id="producto" name="producto" required onchange="actualizarPrecio()">
                             <option value="">Seleccionar producto...</option>
-                            <option value="1">Café Americano - $2.50</option>
-                            <option value="2">Croissant - $1.80</option>
-                            <option value="3">Capuccino - $3.00</option>
-                            <option value="4">Té Verde - $2.00</option>
+                            <?php foreach ($productos as $producto): ?>
+                            <option value="<?php echo $producto['id']; ?>" 
+                                    data-precio="<?php echo $producto['precio_base']; ?>"
+                                    data-stock="<?php echo $producto['stock_actual']; ?>">
+                                <?php echo htmlspecialchars($producto['nombre']); ?> - $<?php echo number_format($producto['precio_base'], 2); ?>
+                            </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="form-group">
@@ -193,6 +185,7 @@
                         </div>
                     </div>
                     <div class="form-actions">
+                        <button type="button" class="add-to-cart-button" onclick="agregarAlCarrito()">Agregar al Carrito</button>
                         <button type="submit" class="submit-button">Completar Venta</button>
                         <button type="button" class="cancel-button" onclick="cerrarModal()">Cancelar</button>
                     </div>
@@ -208,19 +201,19 @@
                 <div class="sale-details">
                     <div class="detail-group">
                         <label>ID Venta:</label>
-                        <span id="detailId">#001</span>
+                        <span id="detailId"></span>
                     </div>
                     <div class="detail-group">
                         <label>Fecha:</label>
-                        <span id="detailDate">2024-03-20 14:30</span>
+                        <span id="detailDate"></span>
                     </div>
                     <div class="detail-group">
                         <label>Empleado:</label>
-                        <span id="detailEmployee">Juan Pérez</span>
+                        <span id="detailEmployee"></span>
                     </div>
                     <div class="detail-group">
                         <label>Método de Pago:</label>
-                        <span id="detailPayment">Tarjeta</span>
+                        <span id="detailPayment"></span>
                     </div>
                     <div class="detail-items">
                         <h3>Productos</h3>
@@ -238,7 +231,7 @@
                     </div>
                     <div class="detail-total">
                         <span>Total:</span>
-                        <span id="detailTotal">$25.50</span>
+                        <span id="detailTotal"></span>
                     </div>
                 </div>
             </div>
@@ -280,32 +273,6 @@
     <script>
         // Variables globales
         let carrito = [];
-        let ventas = [
-            {
-                id: 1,
-                fecha: '2024-03-20 14:30',
-                productos: [
-                    { nombre: 'Café Americano', cantidad: 2, precio: 2.50, subtotal: 5.00 },
-                    { nombre: 'Croissant', cantidad: 1, precio: 1.80, subtotal: 1.80 }
-                ],
-                total: 25.50,
-                metodoPago: 'Tarjeta',
-                estado: 'completada',
-                empleado: 'Juan Pérez'
-            },
-            {
-                id: 2,
-                fecha: '2024-03-20 15:15',
-                productos: [
-                    { nombre: 'Capuccino', cantidad: 1, precio: 3.00, subtotal: 3.00 },
-                    { nombre: 'Té Verde', cantidad: 2, precio: 2.00, subtotal: 4.00 }
-                ],
-                total: 18.75,
-                metodoPago: 'Efectivo',
-                estado: 'completada',
-                empleado: 'María García'
-            }
-        ];
 
         // Funciones para el modal de nueva venta
         function mostrarFormulario() {
@@ -323,8 +290,9 @@
             const producto = document.getElementById('producto');
             const cantidad = document.getElementById('cantidad');
             if (producto.value) {
-                const precio = parseFloat(producto.options[producto.selectedIndex].text.split('$')[1]);
-                const cantidad = parseInt(document.getElementById('cantidad').value);
+                const precio = parseFloat(producto.options[producto.selectedIndex].dataset.precio);
+                const stock = parseInt(producto.options[producto.selectedIndex].dataset.stock);
+                cantidad.max = stock;
                 actualizarTotal();
             }
         }
@@ -333,7 +301,7 @@
             const producto = document.getElementById('producto');
             const cantidad = document.getElementById('cantidad');
             if (producto.value) {
-                const precio = parseFloat(producto.options[producto.selectedIndex].text.split('$')[1]);
+                const precio = parseFloat(producto.options[producto.selectedIndex].dataset.precio);
                 const cantidad = parseInt(document.getElementById('cantidad').value);
                 const total = precio * cantidad;
                 document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
@@ -346,10 +314,12 @@
             
             if (producto.value && cantidad.value) {
                 const nombre = producto.options[producto.selectedIndex].text.split(' - ')[0];
-                const precio = parseFloat(producto.options[producto.selectedIndex].text.split('$')[1]);
+                const precio = parseFloat(producto.options[producto.selectedIndex].dataset.precio);
                 const cantidad = parseInt(document.getElementById('cantidad').value);
+                const id = producto.value;
                 
                 carrito.push({
+                    id,
                     nombre,
                     cantidad,
                     precio,
@@ -389,128 +359,177 @@
 
         function procesarVenta(event) {
             event.preventDefault();
+            
+            if (carrito.length === 0) {
+                alert('El carrito está vacío');
+                return;
+            }
+
             const metodoPago = document.getElementById('metodoPago').value;
             
-            if (carrito.length > 0) {
-                const nuevaVenta = {
-                    id: ventas.length + 1,
-                    fecha: new Date().toLocaleString(),
-                    productos: [...carrito],
-                    total: carrito.reduce((sum, item) => sum + item.subtotal, 0),
-                    metodoPago,
-                    estado: 'completada',
-                    empleado: 'Empleado Actual' // Esto debería venir de la sesión
-                };
-                
-                ventas.push(nuevaVenta);
-                actualizarTablaVentas();
-                cerrarModal();
-                alert('Venta procesada con éxito');
-            }
+            const ventaData = {
+                productos: carrito,
+                metodo_pago: metodoPago
+            };
+
+            fetch('../../php/procesar_venta.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(ventaData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Venta procesada con éxito');
+                    cerrarModal();
+                    cargarVentas();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error al procesar la venta: ' + error);
+            });
         }
 
         // Funciones para ver detalles de venta
         function mostrarDetalles(ventaId) {
-            const venta = ventas.find(v => v.id === ventaId);
-            if (venta) {
-                document.getElementById('detailId').textContent = `#${venta.id.toString().padStart(3, '0')}`;
-                document.getElementById('detailDate').textContent = venta.fecha;
-                document.getElementById('detailEmployee').textContent = venta.empleado;
-                document.getElementById('detailPayment').textContent = venta.metodoPago;
-                
-                const detailItems = document.getElementById('detailItems');
-                detailItems.innerHTML = '';
-                
-                venta.productos.forEach(producto => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${producto.nombre}</td>
-                        <td>${producto.cantidad}</td>
-                        <td>$${producto.precio.toFixed(2)}</td>
-                        <td>$${producto.subtotal.toFixed(2)}</td>
-                    `;
-                    detailItems.appendChild(row);
+            fetch(`../../php/obtener_venta.php?id=${ventaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    const venta = data.venta;
+                    const detalles = data.detalles;
+
+                    document.getElementById('detailId').textContent = `#${venta.id.toString().padStart(3, '0')}`;
+                    document.getElementById('detailDate').textContent = venta.fecha_venta;
+                    document.getElementById('detailEmployee').textContent = venta.empleado_nombre;
+                    document.getElementById('detailPayment').textContent = venta.metodo_pago;
+                    
+                    const detailItems = document.getElementById('detailItems');
+                    detailItems.innerHTML = '';
+                    
+                    detalles.forEach(detalle => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${detalle.producto_nombre}</td>
+                            <td>${detalle.cantidad}</td>
+                            <td>$${parseFloat(detalle.precio_unitario).toFixed(2)}</td>
+                            <td>$${parseFloat(detalle.subtotal).toFixed(2)}</td>
+                        `;
+                        detailItems.appendChild(row);
+                    });
+                    
+                    document.getElementById('detailTotal').textContent = `$${parseFloat(venta.total).toFixed(2)}`;
+                    document.getElementById('detailsModal').style.display = 'block';
+                })
+                .catch(error => {
+                    alert('Error al obtener los detalles: ' + error);
                 });
-                
-                document.getElementById('detailTotal').textContent = `$${venta.total.toFixed(2)}`;
-                document.getElementById('detailsModal').style.display = 'block';
-            }
         }
 
         function imprimirTicket(ventaId) {
-            const venta = ventas.find(v => v.id === ventaId);
-            if (venta) {
-                const ticket = `
-                    ============================
-                    TICKET DE VENTA
-                    ============================
-                    ID: #${venta.id.toString().padStart(3, '0')}
-                    Fecha: ${venta.fecha}
-                    Empleado: ${venta.empleado}
-                    Método de Pago: ${venta.metodoPago}
-                    ============================
-                    ${venta.productos.map(p => 
-                        `${p.nombre} x${p.cantidad} - $${p.subtotal.toFixed(2)}`
-                    ).join('\n')}
-                    ============================
-                    Total: $${venta.total.toFixed(2)}
-                    ============================
-                    ¡Gracias por su compra!
-                `;
-                
-                const ventanaImpresion = window.open('', '_blank');
-                ventanaImpresion.document.write(`
-                    <html>
-                        <head>
-                            <title>Ticket de Venta</title>
-                            <style>
-                                body { font-family: monospace; white-space: pre; }
-                            </style>
-                        </head>
-                        <body>${ticket}</body>
-                    </html>
-                `);
-                ventanaImpresion.document.close();
-                ventanaImpresion.print();
-            }
+            fetch(`../../php/obtener_venta.php?id=${ventaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    const venta = data.venta;
+                    const detalles = data.detalles;
+
+                    const ticket = `
+                        ============================
+                        TICKET DE VENTA
+                        ============================
+                        ID: #${venta.id.toString().padStart(3, '0')}
+                        Fecha: ${venta.fecha_venta}
+                        Empleado: ${venta.empleado_nombre}
+                        Método de Pago: ${venta.metodo_pago}
+                        ============================
+                        ${detalles.map(d => 
+                            `${d.producto_nombre} x${d.cantidad} - $${parseFloat(d.subtotal).toFixed(2)}`
+                        ).join('\n')}
+                        ============================
+                        Total: $${parseFloat(venta.total).toFixed(2)}
+                        ============================
+                        ¡Gracias por su compra!
+                    `;
+                    
+                    const ventanaImpresion = window.open('', '_blank');
+                    ventanaImpresion.document.write(`
+                        <html>
+                            <head>
+                                <title>Ticket de Venta</title>
+                                <style>
+                                    body { font-family: monospace; white-space: pre; }
+                                </style>
+                            </head>
+                            <body>${ticket}</body>
+                        </html>
+                    `);
+                    ventanaImpresion.document.close();
+                    ventanaImpresion.print();
+                })
+                .catch(error => {
+                    alert('Error al generar el ticket: ' + error);
+                });
         }
 
         // Funciones de búsqueda y filtrado
         function filtrarVentas() {
-            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const searchText = document.getElementById('searchInput').value;
             const filterDate = document.getElementById('filterDate').value;
             const filterPayment = document.getElementById('filterPayment').value;
             const filterStatus = document.getElementById('filterStatus').value;
             
-            const ventasFiltradas = ventas.filter(venta => {
-                const matchesSearch = venta.id.toString().includes(searchText) ||
-                                    venta.empleado.toLowerCase().includes(searchText);
-                const matchesDate = !filterDate || venta.fecha.includes(filterDate);
-                const matchesPayment = !filterPayment || venta.metodoPago.toLowerCase() === filterPayment.toLowerCase();
-                const matchesStatus = !filterStatus || venta.estado.toLowerCase() === filterStatus.toLowerCase();
-                
-                return matchesSearch && matchesDate && matchesPayment && matchesStatus;
-            });
-            
-            actualizarTablaVentas(ventasFiltradas);
+            let url = '../../php/obtener_ventas.php?';
+            if (searchText) url += `busqueda=${encodeURIComponent(searchText)}&`;
+            if (filterDate) url += `fecha=${encodeURIComponent(filterDate)}&`;
+            if (filterPayment) url += `metodo_pago=${encodeURIComponent(filterPayment)}&`;
+            if (filterStatus) url += `estado=${encodeURIComponent(filterStatus)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    actualizarTablaVentas(data.ventas);
+                    actualizarEstadisticas(data.estadisticas);
+                    actualizarProductosPopulares(data.productos_populares);
+                })
+                .catch(error => {
+                    alert('Error al filtrar ventas: ' + error);
+                });
         }
 
-        function actualizarTablaVentas(ventasAMostrar = ventas) {
-            const tbody = document.querySelector('.sales-table tbody');
+        function actualizarTablaVentas(ventas) {
+            const tbody = document.getElementById('ventasTableBody');
             tbody.innerHTML = '';
             
-            ventasAMostrar.forEach(venta => {
+            ventas.forEach(venta => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>#${venta.id.toString().padStart(3, '0')}</td>
-                    <td>${venta.fecha}</td>
+                    <td>${venta.fecha_venta}</td>
                     <td>
                         <button class="view-details" onclick="mostrarDetalles(${venta.id})">Ver Detalles</button>
                     </td>
-                    <td>$${venta.total.toFixed(2)}</td>
-                    <td>${venta.metodoPago}</td>
+                    <td>$${parseFloat(venta.total).toFixed(2)}</td>
+                    <td>${venta.metodo_pago}</td>
                     <td><span class="status ${venta.estado}">${venta.estado}</span></td>
-                    <td>${venta.empleado}</td>
+                    <td>${venta.empleado_nombre}</td>
                     <td>
                         <button class="action-button view" onclick="mostrarDetalles(${venta.id})">Ver</button>
                         <button class="action-button print" onclick="imprimirTicket(${venta.id})">Imprimir</button>
@@ -520,9 +539,31 @@
             });
         }
 
+        function actualizarEstadisticas(stats) {
+            document.getElementById('ventasDia').textContent = `$${parseFloat(stats.total_ingresos || 0).toFixed(2)}`;
+            document.getElementById('productosVendidos').textContent = stats.total_ventas || 0;
+            document.getElementById('ticketPromedio').textContent = `$${parseFloat(stats.promedio_venta || 0).toFixed(2)}`;
+        }
+
+        function actualizarProductosPopulares(productos) {
+            const container = document.getElementById('productosPopulares');
+            container.innerHTML = '';
+            
+            productos.forEach(producto => {
+                const li = document.createElement('li');
+                li.textContent = `${producto.nombre} - ${producto.total_vendido} ventas`;
+                container.appendChild(li);
+            });
+        }
+
+        // Cargar datos iniciales
+        function cargarVentas() {
+            filtrarVentas();
+        }
+
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
-            actualizarTablaVentas();
+            cargarVentas();
             
             // Event listeners para filtros
             document.getElementById('searchInput').addEventListener('input', filtrarVentas);
