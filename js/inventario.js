@@ -4,32 +4,50 @@ function cargarInventario() {
         .then(res => res.json())
         .then(data => {
             const tbody = document.getElementById('inventarioBody');
-            tbody.innerHTML = '';
-            data.forEach((item, idx) => {
+            tbody.innerHTML = ''; // Limpiar tabla existente
+            data.forEach(item => {
                 const precioFinal = (item.precio_base * (1 - item.descuento / 100)).toFixed(2);
                 let estado = '';
-                if (item.stock_actual < item.stock_minimo) estado = '<span class="status bajo">Bajo</span>';
-                else if (item.stock_actual <= item.stock_minimo * 2) estado = '<span class="status normal">Normal</span>';
-                else estado = '<span class="status alto">Alto</span>';
+                if (item.stock_actual <= item.stock_minimo) estado = '<span class="status bajo">Bajo</span>';
+                else if (item.stock_actual >= (item.stock_minimo * 2)) estado = '<span class="status alto">Alto</span>';
+                else estado = '<span class="status normal">Normal</span>';
 
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${idx + 1}</td>
-                        <td>${item.producto}</td>
-                        <td>${item.categoria}</td>
-                        <td>${item.stock_actual}</td>
-                        <td>${item.stock_minimo}</td>
-                        <td>$${parseFloat(item.precio_base).toFixed(2)}</td>
-                        <td><div class="discount-badge">${item.descuento}%</div></td>
-                        <td>$${precioFinal}</td>
-                        <td>${estado}</td>
-                        <td>
-                            <button class="action-button edit">Editar</button>
-                            <button class="action-button delete">Eliminar</button>
-                        </td>
-                    </tr>
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.producto_nombre}</td>
+                    <td>${item.categoria}</td>
+                    <td>${item.stock_actual}</td>
+                    <td>${item.stock_minimo}</td>
+                    <td>$${parseFloat(item.precio_base).toFixed(2)}</td>
+                    <td><div class="discount-badge">${item.descuento}%</div></td>
+                    <td>$${precioFinal}</td>
+                    <td>${estado}</td>
+                    <td>
+                        <button class="action-button edit" data-id="${item.id}">Editar</button>
+                        <button class="action-button delete" data-id="${item.id}">Eliminar</button>
+                    </td>
                 `;
+                tbody.appendChild(row);
             });
+
+            // Adjuntar event listeners a los botones de editar y eliminar
+            document.querySelectorAll('.action-button.edit').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    editarProducto(id);
+                });
+            });
+
+            document.querySelectorAll('.action-button.delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    eliminarProducto(id);
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar inventario:', error);
         });
 }
 
@@ -86,7 +104,8 @@ function editarProducto(id) {
         .then(data => {
             document.getElementById('inventoryModal').style.display = 'block';
             document.getElementById('inventario_id').value = data.id || '';
-            document.getElementById('producto').value = data.producto_id || '';
+            const productoSelect = document.getElementById('producto');
+            productoSelect.value = data.producto_id || '';
             document.getElementById('stockActual').value = data.stock_actual || '';
             document.getElementById('stockMinimo').value = data.stock_minimo || '';
             document.getElementById('precioBase').value = data.precio_base || '';

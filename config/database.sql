@@ -34,6 +34,22 @@ CREATE TABLE IF NOT EXISTS inventario (
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
 
+-- Tabla de proveedores
+CREATE TABLE IF NOT EXISTS proveedores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    contacto VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    categoria ENUM('cafe', 'postres', 'bebidas', 'insumos') NOT NULL,
+    direccion TEXT NOT NULL,
+    calificacion INT DEFAULT 0,
+    estado ENUM('activo', 'inactivo') DEFAULT 'activo',
+    notas TEXT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Eliminar datos existentes para evitar duplicados
 DELETE FROM inventario;
 DELETE FROM productos;

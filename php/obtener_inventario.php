@@ -4,34 +4,41 @@ require_once '../config/database.php';
 
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['usuario_id'])) {
-    header('HTTP/1.1 401 Unauthorized');
-    exit('No autorizado');
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'No autorizado']);
+    exit();
 }
 
 // Verificar si se proporcionó un ID
 if (!isset($_GET['id'])) {
-    header('HTTP/1.1 400 Bad Request');
-    exit('ID no proporcionado');
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'ID no proporcionado']);
+    exit();
 }
 
 $id = $_GET['id'];
 
 try {
-    $query = "SELECT * FROM inventario WHERE id = ?";
+    // Obtener los datos del inventario
+    $query = "SELECT i.*, p.nombre as producto_nombre 
+              FROM inventario i 
+              JOIN productos p ON i.producto_id = p.id 
+              WHERE i.id = :id";
     $stmt = $conn->prepare($query);
-    $stmt->execute([$id]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($row) {
-        // Devolver los datos en formato JSON
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($result) {
         header('Content-Type: application/json');
-        echo json_encode($row);
+        echo json_encode($result);
     } else {
-        header('HTTP/1.1 404 Not Found');
-        exit('Producto no encontrado');
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Producto no encontrado']);
     }
-} catch (Exception $e) {
-    header('HTTP/1.1 500 Internal Server Error');
-    exit('Error al obtener los datos del producto');
+} catch (PDOException $e) {
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'Error en la base de datos: ' . $e->getMessage()]);
 }
 ?> 

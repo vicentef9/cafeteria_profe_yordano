@@ -15,38 +15,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stock_actual = $_POST['stock_actual'];
     $stock_minimo = $_POST['stock_minimo'];
     $precio_base = $_POST['precio_base'];
-    $descuento = $_POST['descuento'];
-    $notas = $_POST['notas'];
+    $descuento = isset($_POST['descuento']) ? $_POST['descuento'] : 0;
+    $notas = isset($_POST['notas']) ? $_POST['notas'] : '';
 
-    try {
-        if ($inventario_id) {
-            // Actualizar inventario existente
-            $query = "UPDATE inventario SET 
-                     producto_id = ?, 
-                     stock_actual = ?, 
-                     stock_minimo = ?, 
-                     precio_base = ?, 
-                     descuento = ?, 
-                     notas = ? 
-                     WHERE id = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->execute([$producto_id, $stock_actual, $stock_minimo, $precio_base, $descuento, $notas, $inventario_id]);
-        } else {
-            // Insertar nuevo inventario
-            $query = "INSERT INTO inventario (producto_id, stock_actual, stock_minimo, precio_base, descuento, notas) 
-                     VALUES (?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($query);
-            $stmt->execute([$producto_id, $stock_actual, $stock_minimo, $precio_base, $descuento, $notas]);
-        }
-        echo "ok";
-        exit();
-    } catch (Exception $e) {
-        echo "error: " . $e->getMessage();
-        exit();
+    // Verificar si es una actualización o una inserción
+    if (isset($_POST['inventario_id']) && !empty($_POST['inventario_id'])) {
+        // Actualizar registro existente
+        $query = "UPDATE inventario SET 
+                  producto_id = :producto_id,
+                  stock_actual = :stock_actual,
+                  stock_minimo = :stock_minimo,
+                  precio_base = :precio_base,
+                  descuento = :descuento,
+                  notas = :notas
+                  WHERE id = :id";
+        
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id', $_POST['inventario_id'], PDO::PARAM_INT);
+    } else {
+        // Insertar nuevo registro
+        $query = "INSERT INTO inventario 
+                  (producto_id, stock_actual, stock_minimo, precio_base, descuento, notas) 
+                  VALUES 
+                  (:producto_id, :stock_actual, :stock_minimo, :precio_base, :descuento, :notas)";
+        
+        $stmt = $conn->prepare($query);
     }
-} else {
-    // Si no es POST, redirigir a la página de inventario
-    header('Location: ../html/empleados/inventario.php');
-    exit();
+
+    // Vincular parámetros
+    $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
+    $stmt->bindParam(':stock_actual', $stock_actual, PDO::PARAM_INT);
+    $stmt->bindParam(':stock_minimo', $stock_minimo, PDO::PARAM_INT);
+    $stmt->bindParam(':precio_base', $precio_base, PDO::PARAM_STR);
+    $stmt->bindParam(':descuento', $descuento, PDO::PARAM_INT);
+    $stmt->bindParam(':notas', $notas, PDO::PARAM_STR);
+
+    // Ejecutar la consulta
+    if ($stmt->execute()) {
+        echo "ok";
+    } else {
+        echo "Error al guardar los datos";
+    }
+} catch (PDOException $e) {
+    echo "Error en la base de datos: " . $e->getMessage();
 }
 ?> 
