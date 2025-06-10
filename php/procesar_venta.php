@@ -30,7 +30,7 @@ try {
     $conn->beginTransaction();
 
     // Insertar la venta
-    $query_venta = "INSERT INTO ventas (usuario_id, total, metodo_pago) VALUES (:usuario_id, :total, :metodo_pago)";
+    $query_venta = "INSERT INTO ventas (empleado_id, total, metodo_pago) VALUES (:empleado_id, :total, :metodo_pago)";
     $stmt_venta = $conn->prepare($query_venta);
     
     $total = 0;
@@ -38,7 +38,7 @@ try {
         $total += $producto['cantidad'] * $producto['precio'];
     }
 
-    $stmt_venta->bindParam(':usuario_id', $_SESSION['usuario_id']);
+    $stmt_venta->bindParam(':empleado_id', $_SESSION['usuario_id']);
     $stmt_venta->bindParam(':total', $total);
     $stmt_venta->bindParam(':metodo_pago', $data['metodo_pago']);
     $stmt_venta->execute();

@@ -42,8 +42,8 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <ul class="nav-menu">
                 <li><a href="productos.php" class="nav-item">Productos</a></li>
                 <li><a href="inventario.php" class="nav-item active">Inventario</a></li>
-                <li><a href="proveedores.html" class="nav-item">Proveedores</a></li>
-                <li><a href="ventas.html" class="nav-item">Ventas</a></li>
+                <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
+                <li><a href="ventas.php" class="nav-item">Ventas</a></li>
             </ul>
             <div class="user-info">
                 <span class="user-name">Usuario: <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'Empleado'); ?></span>

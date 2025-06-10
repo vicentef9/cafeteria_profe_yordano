@@ -63,19 +63,27 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
         <section class="sales-summary">
             <div class="summary-card">
                 <h3>Ventas del Día</h3>
-                <p class="amount" id="ventasDia">$0.00</p>
+                <p class="amount" id="ventasDia">CLP 0</p>
+                <p class="sub-info" id="totalVentasDia">0 ventas</p>
             </div>
             <div class="summary-card">
                 <h3>Ventas del Mes</h3>
-                <p class="amount" id="ventasMes">$0.00</p>
+                <p class="amount" id="ventasMes">CLP 0</p>
+                <p class="sub-info" id="totalVentasMes">0 ventas</p>
             </div>
             <div class="summary-card">
                 <h3>Productos Vendidos</h3>
                 <p class="amount" id="productosVendidos">0</p>
+                <p class="sub-info" id="empleadosActivos">0 empleados</p>
             </div>
             <div class="summary-card">
                 <h3>Ticket Promedio</h3>
-                <p class="amount" id="ticketPromedio">$0.00</p>
+                <p class="amount" id="ticketPromedio">CLP 0</p>
+            </div>
+            <div class="summary-card">
+                <h3>Horario de Operación</h3>
+                <p class="sub-info" id="primeraVenta">Primera venta: --:--</p>
+                <p class="sub-info" id="ultimaVenta">Última venta: --:--</p>
             </div>
         </section>
 
@@ -127,6 +135,7 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                         <th>Método de Pago</th>
                         <th>Estado</th>
                         <th>Empleado</th>
+                        <th>Notas</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -157,14 +166,14 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                             <option value="<?php echo $producto['id']; ?>" 
                                     data-precio="<?php echo $producto['precio_base']; ?>"
                                     data-stock="<?php echo $producto['stock_actual']; ?>">
-                                <?php echo htmlspecialchars($producto['nombre']); ?> - $<?php echo number_format($producto['precio_base'], 2); ?>
+                                <?php echo htmlspecialchars($producto['nombre']); ?> - CLP<?php echo number_format($producto['precio_base'], 0, ',', '.'); ?>
                             </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="cantidad">Cantidad</label>
-                        <input type="number" id="cantidad" name="cantidad" min="1" value="1" required onchange="actualizarTotal()">
+                        <input type="number" id="cantidad" name="cantidad" min="1" value="1" required>
                     </div>
                     <div class="form-group">
                         <label for="metodoPago">Método de Pago</label>
@@ -181,7 +190,7 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="cart-total">
                             <span>Total:</span>
-                            <span id="totalAmount">$0.00</span>
+                            <span id="totalAmount">CLP 0</span>
                         </div>
                     </div>
                     <div class="form-actions">
@@ -293,18 +302,6 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                 const precio = parseFloat(producto.options[producto.selectedIndex].dataset.precio);
                 const stock = parseInt(producto.options[producto.selectedIndex].dataset.stock);
                 cantidad.max = stock;
-                actualizarTotal();
-            }
-        }
-
-        function actualizarTotal() {
-            const producto = document.getElementById('producto');
-            const cantidad = document.getElementById('cantidad');
-            if (producto.value) {
-                const precio = parseFloat(producto.options[producto.selectedIndex].dataset.precio);
-                const cantidad = parseInt(document.getElementById('cantidad').value);
-                const total = precio * cantidad;
-                document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
             }
         }
 
@@ -315,15 +312,15 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
             if (producto.value && cantidad.value) {
                 const nombre = producto.options[producto.selectedIndex].text.split(' - ')[0];
                 const precio = parseFloat(producto.options[producto.selectedIndex].dataset.precio);
-                const cantidad = parseInt(document.getElementById('cantidad').value);
+                const cantidadIngresada = parseInt(cantidad.value);
                 const id = producto.value;
                 
                 carrito.push({
                     id,
                     nombre,
-                    cantidad,
+                    cantidad: cantidadIngresada,
                     precio,
-                    subtotal: precio * cantidad
+                    subtotal: precio * cantidadIngresada
                 });
                 
                 actualizarCarrito();
@@ -342,14 +339,14 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                 itemElement.className = 'cart-item';
                 itemElement.innerHTML = `
                     <span>${item.nombre} x${item.cantidad}</span>
-                    <span>$${item.subtotal.toFixed(2)}</span>
+                    <span>CLP ${item.subtotal.toFixed(0)}</span>
                     <button onclick="eliminarDelCarrito(${index})">Eliminar</button>
                 `;
                 cartItems.appendChild(itemElement);
                 total += item.subtotal;
             });
 
-            document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = `CLP ${total.toFixed(0)}`;
         }
 
         function eliminarDelCarrito(index) {
@@ -420,13 +417,13 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                         row.innerHTML = `
                             <td>${detalle.producto_nombre}</td>
                             <td>${detalle.cantidad}</td>
-                            <td>$${parseFloat(detalle.precio_unitario).toFixed(2)}</td>
-                            <td>$${parseFloat(detalle.subtotal).toFixed(2)}</td>
+                            <td>CLP ${parseFloat(detalle.precio_unitario).toFixed(0)}</td>
+                            <td>CLP ${parseFloat(detalle.subtotal).toFixed(0)}</td>
                         `;
                         detailItems.appendChild(row);
                     });
                     
-                    document.getElementById('detailTotal').textContent = `$${parseFloat(venta.total).toFixed(2)}`;
+                    document.getElementById('detailTotal').textContent = `CLP ${parseFloat(venta.total).toFixed(0)}`;
                     document.getElementById('detailsModal').style.display = 'block';
                 })
                 .catch(error => {
@@ -456,10 +453,10 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                         Método de Pago: ${venta.metodo_pago}
                         ============================
                         ${detalles.map(d => 
-                            `${d.producto_nombre} x${d.cantidad} - $${parseFloat(d.subtotal).toFixed(2)}`
+                            `${d.producto_nombre} x${d.cantidad} - CLP ${parseFloat(d.subtotal).toFixed(0)}`
                         ).join('\n')}
                         ============================
-                        Total: $${parseFloat(venta.total).toFixed(2)}
+                        Total: CLP ${parseFloat(venta.total).toFixed(0)}
                         ============================
                         ¡Gracias por su compra!
                     `;
@@ -500,11 +497,11 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Respuesta de obtener_ventas.php:', data);
                     if (data.error) {
-                        alert(data.error);
+                        console.error('Error:', data.error);
                         return;
                     }
-
                     actualizarTablaVentas(data.ventas);
                     actualizarEstadisticas(data.estadisticas);
                     actualizarProductosPopulares(data.productos_populares);
@@ -515,21 +512,26 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
         }
 
         function actualizarTablaVentas(ventas) {
+            console.log('Datos recibidos en actualizarTablaVentas:', ventas);
             const tbody = document.getElementById('ventasTableBody');
+            console.log('Elemento tbody:', tbody);
             tbody.innerHTML = '';
             
             ventas.forEach(venta => {
                 const row = document.createElement('tr');
+                const totalVenta = parseFloat(venta.total || 0).toFixed(0);
+                
                 row.innerHTML = `
                     <td>#${venta.id.toString().padStart(3, '0')}</td>
                     <td>${venta.fecha_venta}</td>
                     <td>
                         <button class="view-details" onclick="mostrarDetalles(${venta.id})">Ver Detalles</button>
                     </td>
-                    <td>$${parseFloat(venta.total).toFixed(2)}</td>
+                    <td>CLP ${totalVenta}</td>
                     <td>${venta.metodo_pago}</td>
                     <td><span class="status ${venta.estado}">${venta.estado}</span></td>
                     <td>${venta.empleado_nombre}</td>
+                    <td>${venta.notas || 'N/A'}</td>
                     <td>
                         <button class="action-button view" onclick="mostrarDetalles(${venta.id})">Ver</button>
                         <button class="action-button print" onclick="imprimirTicket(${venta.id})">Imprimir</button>
@@ -540,30 +542,103 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
         }
 
         function actualizarEstadisticas(stats) {
-            document.getElementById('ventasDia').textContent = `$${parseFloat(stats.total_ingresos || 0).toFixed(2)}`;
-            document.getElementById('productosVendidos').textContent = stats.total_ventas || 0;
-            document.getElementById('ticketPromedio').textContent = `$${parseFloat(stats.promedio_venta || 0).toFixed(2)}`;
+            // Calcular ventas del día
+            const ventasDia = parseFloat(stats.total_ingresos || 0);
+            document.getElementById('ventasDia').textContent = `CLP ${ventasDia.toFixed(0)}`;
+            document.getElementById('totalVentasDia').textContent = `${stats.total_ventas || 0} ventas`;
+
+            // Calcular ventas del mes
+            const ventasMes = parseFloat(stats.total_ingresos_mes || 0);
+            document.getElementById('ventasMes').textContent = `CLP ${ventasMes.toFixed(0)}`;
+            document.getElementById('totalVentasMes').textContent = `${stats.total_ventas_mes || 0} ventas`;
+
+            // Mostrar cantidad total de productos vendidos
+            const productosVendidos = parseInt(stats.total_productos_vendidos || 0);
+            document.getElementById('productosVendidos').textContent = productosVendidos;
+            document.getElementById('empleadosActivos').textContent = `${stats.total_empleados || 0} empleados`;
+
+            // Calcular ticket promedio
+            const ticketPromedio = parseFloat(stats.promedio_venta || 0);
+            document.getElementById('ticketPromedio').textContent = `CLP ${ticketPromedio.toFixed(0)}`;
+
+            // Mostrar horario de operación
+            if (stats.primera_venta) {
+                const primeraVenta = new Date(stats.primera_venta);
+                document.getElementById('primeraVenta').textContent = `Primera venta: ${primeraVenta.toLocaleTimeString()}`;
+            } else {
+                document.getElementById('primeraVenta').textContent = 'Primera venta: --:--';
+            }
+            
+            if (stats.ultima_venta) {
+                const ultimaVenta = new Date(stats.ultima_venta);
+                document.getElementById('ultimaVenta').textContent = `Última venta: ${ultimaVenta.toLocaleTimeString()}`;
+            } else {
+                document.getElementById('ultimaVenta').textContent = 'Última venta: --:--';
+            }
+
+            // Actualizar la tabla de ventas
+            // actualizarTablaVentas(stats.ventas || []); // Esta línea se elimina para evitar que la tabla se borre
+        }
+
+        function calcularVentasMes(ventas) {
+            return ventas.reduce((total, venta) => total + parseFloat(venta.total), 0);
+        }
+
+        function calcularTicketPromedio(totalIngresos, totalVentas) {
+            if (totalVentas === 0) return 0;
+            return totalIngresos / totalVentas;
         }
 
         function actualizarProductosPopulares(productos) {
             const container = document.getElementById('productosPopulares');
             container.innerHTML = '';
             
-            productos.forEach(producto => {
+            // Ordenar productos por cantidad vendida
+            const productosOrdenados = productos.sort((a, b) => b.total_vendido - a.total_vendido);
+            
+            productosOrdenados.forEach((producto, index) => {
                 const li = document.createElement('li');
-                li.textContent = `${producto.nombre} - ${producto.total_vendido} ventas`;
+                li.innerHTML = `
+                    <span class="producto-nombre">${producto.nombre}</span>
+                    <span class="producto-cantidad">${producto.total_vendido} unidades</span>
+                    <span class="producto-porcentaje">${calcularPorcentajeVentas(producto.total_vendido, productos)}%</span>
+                `;
                 container.appendChild(li);
             });
         }
 
-        // Cargar datos iniciales
+        function calcularPorcentajeVentas(cantidadProducto, todosProductos) {
+            const totalVentas = todosProductos.reduce((sum, p) => sum + p.total_vendido, 0);
+            if (totalVentas === 0) return 0;
+            return ((cantidadProducto / totalVentas) * 100).toFixed(1);
+        }
+
         function cargarVentas() {
-            filtrarVentas();
+            fetch('../../php/obtener_ventas.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Respuesta de obtener_ventas.php:', data);
+                    if (data.error) {
+                        console.error('Error:', data.error);
+                        return;
+                    }
+                    actualizarTablaVentas(data.ventas);
+                    actualizarEstadisticas(data.estadisticas);
+                    actualizarProductosPopulares(data.productos_populares);
+                })
+                .catch(error => {
+                    console.error('Error al cargar las ventas:', error);
+                });
+        }
+
+        function actualizarEstadisticasPeriodicamente() {
+            setInterval(cargarVentas, 60000);
         }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
             cargarVentas();
+            actualizarEstadisticasPeriodicamente();
             
             // Event listeners para filtros
             document.getElementById('searchInput').addEventListener('input', filtrarVentas);

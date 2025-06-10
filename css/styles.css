@@ -442,30 +442,40 @@ body {
    Estilos de Ventas
    ========================================= */
 .sales-summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 2rem;
+    padding: 0 1rem;
 }
 
 .summary-card {
-    background: white;
-    padding: 1.5rem;
+    background-color: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex: 1;
+    min-width: 200px;
+    margin: 0.5rem;
 }
 
 .summary-card h3 {
     color: var(--text-color);
-    font-size: 1rem;
     margin-bottom: 0.5rem;
+    font-size: 1rem;
 }
 
 .summary-card .amount {
-    color: var(--primary-color);
     font-size: 1.5rem;
     font-weight: 600;
+    color: var(--primary-color);
+    margin: 0.5rem 0;
+}
+
+.summary-card .sub-info {
+    font-size: 0.875rem;
+    color: #666;
+    margin: 0.25rem 0;
 }
 
 .sales-table-container {
@@ -792,11 +802,7 @@ body {
     }
 
     .summary-card {
-        padding: 1rem;
-    }
-
-    .summary-card .amount {
-        font-size: 1.2rem;
+        min-width: calc(50% - 1rem);
     }
 
     .modal-content {
@@ -812,6 +818,10 @@ body {
     
     .login-box h1 {
         font-size: 1.5rem;
+    }
+
+    .summary-card {
+        min-width: 100%;
     }
 }
 
@@ -848,4 +858,53 @@ body {
     background-color: #d4edda;
     color: var(--success-color);
     border: 1px solid #c3e6cb;
+}
+
+.productos-populares {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.productos-populares h2 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+
+.productos-populares ol {
+    list-style-position: inside;
+    padding: 0;
+}
+
+.productos-populares li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+.productos-populares li:last-child {
+    border-bottom: none;
+}
+
+.producto-nombre {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.producto-cantidad {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.producto-porcentaje {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
 } 
