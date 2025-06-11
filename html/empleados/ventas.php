@@ -18,10 +18,7 @@ if ($rol !== 'empleado' && $rol !== 'admin') {
 }
 
 // Obtener productos disponibles
-$query_productos = "SELECT p.*, i.precio_base, i.stock_actual 
-                   FROM productos p 
-                   JOIN inventario i ON p.id = i.producto_id 
-                   WHERE i.stock_actual > 0";
+$query_productos = "SELECT p.*, i.precio_base, i.stock_actual \n                   FROM productos p \n                   JOIN inventario i ON p.id = i.producto_id \n                   WHERE i.stock_actual > 0";
 $stmt_productos = $conn->prepare($query_productos);
 $stmt_productos->execute();
 $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
@@ -36,216 +33,216 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <nav class="sidebar">
+    <div class="dashboard-container">
+        <div class="sidebar">
             <div class="logo">
-                <h2>Sistema de Cafetería</h2>
+                <h2>Sistema de <br> Cafetería</h2>
             </div>
-            <ul class="nav-menu">
-                <li><a href="productos.php" class="nav-item">Productos</a></li>
-                <li><a href="inventario.php" class="nav-item">Inventario</a></li>
-                <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
-                <li><a href="ventas.php" class="nav-item active">Ventas</a></li>
-            </ul>
-            <div class="user-info">
-                <span class="user-name">Usuario: <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'Empleado'); ?></span>
-                <a href="../autenticacion/login.php" class="logout-button">Cerrar Sesión</a>
-            </div>
-        </nav>
-    </header>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="interfase_empleado.html" class="nav-item">Inicio</a></li>
+                    <li><a href="productos.php" class="nav-item">Productos</a></li>
+                    <li><a href="inventario.php" class="nav-item">Inventario</a></li>
+                    <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
+                    <li><a href="ventas.php" class="nav-item">Ventas</a></li>
+                    <li><a href="soporte.html" class="nav-item">Soporte</a></li>
+                </ul>
+            </nav>
+        </div>
 
-    <main class="main-content">
-        <section class="dashboard-header">
-            <h1>Gestión de Ventas</h1>
-            <button class="add-button" onclick="mostrarFormulario()">Nueva Venta</button>
-        </section>
+        <main class="main-content">
+            <section class="dashboard-header">
+                <h1>Gestión de Ventas</h1>
+                <button class="add-button" onclick="mostrarFormulario()">Nueva Venta</button>
+            </section>
 
-        <section class="sales-summary">
-            <div class="summary-card">
-                <h3>Ventas del Día</h3>
-                <p class="amount" id="ventasDia">CLP 0</p>
-                <p class="sub-info" id="totalVentasDia">0 ventas</p>
-            </div>
-            <div class="summary-card">
-                <h3>Ventas del Mes</h3>
-                <p class="amount" id="ventasMes">CLP 0</p>
-                <p class="sub-info" id="totalVentasMes">0 ventas</p>
-            </div>
-            <div class="summary-card">
-                <h3>Productos Vendidos</h3>
-                <p class="amount" id="productosVendidos">0</p>
-                <p class="sub-info" id="empleadosActivos">0 empleados</p>
-            </div>
-            <div class="summary-card">
-                <h3>Ticket Promedio</h3>
-                <p class="amount" id="ticketPromedio">CLP 0</p>
-            </div>
-            <div class="summary-card">
-                <h3>Horario de Operación</h3>
-                <p class="sub-info" id="primeraVenta">Primera venta: --:--</p>
-                <p class="sub-info" id="ultimaVenta">Última venta: --:--</p>
-            </div>
-        </section>
+            <section class="sales-summary">
+                <div class="summary-card">
+                    <h3>Ventas del Día</h3>
+                    <p class="amount" id="ventasDia">CLP 0</p>
+                    <p class="sub-info" id="totalVentasDia">0 ventas</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Ventas del Mes</h3>
+                    <p class="amount" id="ventasMes">CLP 0</p>
+                    <p class="sub-info" id="totalVentasMes">0 ventas</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Productos Vendidos</h3>
+                    <p class="amount" id="productosVendidos">0</p>
+                    <p class="sub-info" id="empleadosActivos">0 empleados</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Ticket Promedio</h3>
+                    <p class="amount" id="ticketPromedio">CLP 0</p>
+                </div>
+                <div class="summary-card">
+                    <h3>Horario de Operación</h3>
+                    <p class="sub-info" id="primeraVenta">Primera venta: --:--</p>
+                    <p class="sub-info" id="ultimaVenta">Última venta: --:--</p>
+                </div>
+            </section>
 
-        <section class="search-filters">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Buscar venta...">
-                <button class="search-button" onclick="filtrarVentas()">
-                    <i class="fas fa-search"></i> Buscar
-                </button>
-            </div>
-
-            <div class="filters-container">
-                <div class="filter-group">
-                    <label for="filterDate">Fecha</label>
-                    <input type="date" id="filterDate">
+            <section class="search-filters">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Buscar venta...">
+                    <button class="search-button" onclick="filtrarVentas()">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
                 </div>
 
-                <div class="filter-group">
-                    <label for="filterPayment">Método de Pago</label>
-                    <select id="filterPayment">
-                        <option value="">Todos</option>
-                        <option value="efectivo">Efectivo</option>
-                        <option value="tarjeta">Tarjeta</option>
-                        <option value="transferencia">Transferencia</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="filterStatus">Estado</label>
-                    <select id="filterStatus">
-                        <option value="">Todos</option>
-                        <option value="completada">Completada</option>
-                        <option value="cancelada">Cancelada</option>
-                        <option value="pendiente">Pendiente</option>
-                    </select>
-                </div>
-            </div>
-        </section>
-
-        <section class="sales-table-container">
-            <h2>Registro de Ventas</h2>
-            <table class="sales-table">
-                <thead>
-                    <tr>
-                        <th>ID Venta</th>
-                        <th>Fecha</th>
-                        <th>Productos</th>
-                        <th>Total</th>
-                        <th>Método de Pago</th>
-                        <th>Estado</th>
-                        <th>Empleado</th>
-                        <th>Notas</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="ventasTableBody">
-                    <!-- Los datos se cargarán dinámicamente -->
-                </tbody>
-            </table>
-        </section>
-
-        <section class="productos-populares">
-            <h2>Productos Más Vendidos</h2>
-            <ol id="productosPopulares">
-                <!-- Los datos se cargarán dinámicamente -->
-            </ol>
-        </section>
-
-        <!-- Modal para nueva venta -->
-        <div id="saleModal" class="modal">
-            <div class="modal-content">
-                <span class="close-button" onclick="cerrarModal()">&times;</span>
-                <h2>Nueva Venta</h2>
-                <form id="saleForm" onsubmit="procesarVenta(event)">
-                    <div class="form-group">
-                        <label for="producto">Producto</label>
-                        <select id="producto" name="producto" required onchange="actualizarPrecio()">
-                            <option value="">Seleccionar producto...</option>
-                            <?php foreach ($productos as $producto): ?>
-                            <option value="<?php echo $producto['id']; ?>" 
-                                    data-precio="<?php echo $producto['precio_base']; ?>"
-                                    data-stock="<?php echo $producto['stock_actual']; ?>">
-                                <?php echo htmlspecialchars($producto['nombre']); ?> - CLP<?php echo number_format($producto['precio_base'], 0, ',', '.'); ?>
-                            </option>
-                            <?php endforeach; ?>
-                        </select>
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label for="filterDate">Fecha</label>
+                        <input type="date" id="filterDate">
                     </div>
-                    <div class="form-group">
-                        <label for="cantidad">Cantidad</label>
-                        <input type="number" id="cantidad" name="cantidad" min="1" value="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="metodoPago">Método de Pago</label>
-                        <select id="metodoPago" name="metodoPago" required>
+
+                    <div class="filter-group">
+                        <label for="filterPayment">Método de Pago</label>
+                        <select id="filterPayment">
+                            <option value="">Todos</option>
                             <option value="efectivo">Efectivo</option>
                             <option value="tarjeta">Tarjeta</option>
                             <option value="transferencia">Transferencia</option>
                         </select>
                     </div>
-                    <div class="cart-summary">
-                        <h3>Resumen de la Venta</h3>
-                        <div id="cartItems">
-                            <!-- Los items se agregarán dinámicamente -->
-                        </div>
-                        <div class="cart-total">
-                            <span>Total:</span>
-                            <span id="totalAmount">CLP 0</span>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" class="add-to-cart-button" onclick="agregarAlCarrito()">Agregar al Carrito</button>
-                        <button type="submit" class="submit-button">Completar Venta</button>
-                        <button type="button" class="cancel-button" onclick="cerrarModal()">Cancelar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
 
-        <!-- Modal para ver detalles de venta -->
-        <div id="detailsModal" class="modal">
-            <div class="modal-content">
-                <span class="close-button" onclick="cerrarModal()">&times;</span>
-                <h2>Detalles de la Venta</h2>
-                <div class="sale-details">
-                    <div class="detail-group">
-                        <label>ID Venta:</label>
-                        <span id="detailId"></span>
+                    <div class="filter-group">
+                        <label for="filterStatus">Estado</label>
+                        <select id="filterStatus">
+                            <option value="">Todos</option>
+                            <option value="completada">Completada</option>
+                            <option value="cancelada">Cancelada</option>
+                            <option value="pendiente">Pendiente</option>
+                        </select>
                     </div>
-                    <div class="detail-group">
-                        <label>Fecha:</label>
-                        <span id="detailDate"></span>
-                    </div>
-                    <div class="detail-group">
-                        <label>Empleado:</label>
-                        <span id="detailEmployee"></span>
-                    </div>
-                    <div class="detail-group">
-                        <label>Método de Pago:</label>
-                        <span id="detailPayment"></span>
-                    </div>
-                    <div class="detail-items">
-                        <h3>Productos</h3>
-                        <table class="details-table">
-                            <tr>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Precio Unit.</th>
-                                <th>Subtotal</th>
-                            </tr>
-                            <tbody id="detailItems">
-                                <!-- Los items se cargarán dinámicamente -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="detail-total">
-                        <span>Total:</span>
-                        <span id="detailTotal"></span>
+                </div>
+            </section>
+
+            <section class="sales-table-container">
+                <h2>Registro de Ventas</h2>
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th>ID Venta</th>
+                            <th>Fecha</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Método de Pago</th>
+                            <th>Estado</th>
+                            <th>Empleado</th>
+                            <th>Notas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ventasTableBody">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="productos-populares">
+                <h2>Productos Más Vendidos</h2>
+                <ol id="productosPopulares">
+                    <!-- Los datos se cargarán dinámicamente -->
+                </ol>
+            </section>
+
+            <!-- Modal para nueva venta -->
+            <div id="saleModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button" onclick="cerrarModal()">&times;</span>
+                    <h2>Nueva Venta</h2>
+                    <form id="saleForm" onsubmit="procesarVenta(event)">
+                        <div class="form-group">
+                            <label for="producto">Producto</label>
+                            <select id="producto" name="producto" required onchange="actualizarPrecio()">
+                                <option value="">Seleccionar producto...</option>
+                                <?php foreach ($productos as $producto): ?>
+                                <option value="<?php echo $producto['id']; ?>" 
+                                        data-precio="<?php echo $producto['precio_base']; ?>"
+                                        data-stock="<?php echo $producto['stock_actual']; ?>">
+                                    <?php echo htmlspecialchars($producto['nombre']); ?> - CLP<?php echo number_format($producto['precio_base'], 0, ',', '.'); ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cantidad">Cantidad</label>
+                            <input type="number" id="cantidad" name="cantidad" min="1" value="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="metodoPago">Método de Pago</label>
+                            <select id="metodoPago" name="metodoPago" required>
+                                <option value="efectivo">Efectivo</option>
+                                <option value="tarjeta">Tarjeta</option>
+                                <option value="transferencia">Transferencia</option>
+                            </select>
+                        </div>
+                        <div class="cart-summary">
+                            <h3>Resumen de la Venta</h3>
+                            <div id="cartItems">
+                                <!-- Los items se agregarán dinámicamente -->
+                            </div>
+                            <div class="cart-total">
+                                <span>Total:</span>
+                                <span id="totalAmount">CLP 0</span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="add-to-cart-button" onclick="agregarAlCarrito()">Agregar al Carrito</button>
+                            <button type="submit" class="submit-button">Completar Venta</button>
+                            <button type="button" class="cancel-button" onclick="cerrarModal()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal para ver detalles de venta -->
+            <div id="detailsModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button" onclick="cerrarModal()">&times;</span>
+                    <h2>Detalles de la Venta</h2>
+                    <div class="sale-details">
+                        <div class="detail-group">
+                            <label>ID Venta:</label>
+                            <span id="detailId"></span>
+                        </div>
+                        <div class="detail-group">
+                            <label>Fecha:</label>
+                            <span id="detailDate"></span>
+                        </div>
+                        <div class="detail-group">
+                            <label>Empleado:</label>
+                            <span id="detailEmployee"></span>
+                        </div>
+                        <div class="detail-group">
+                            <label>Método de Pago:</label>
+                            <span id="detailPayment"></span>
+                        </div>
+                        <div class="detail-items">
+                            <h3>Productos</h3>
+                            <table class="details-table">
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unit.</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                                <tbody id="detailItems">
+                                    <!-- Los items se cargarán dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="detail-total">
+                            <span>Total:</span>
+                            <span id="detailTotal"></span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <footer>
         <div class="footer-content">

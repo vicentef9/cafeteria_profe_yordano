@@ -2,10 +2,11 @@
    Variables y estilos base
    ========================================= */
 :root {
-    --primary-color: #8B4513;    /* Marrón café */
+    --primary-color: #5C3317;    /* Marrón oscuro para sidebar */
     --secondary-color: #D2691E;  /* Naranja pastel */
     --background-color: #FFF8DC; /* Crema suave */
     --text-color: #333;          /* Marrón oscuro */
+    --link-color: #663399;       /* Color para enlaces "Acceder" */
     --error-color: #dc3545;      /* Rojo suave */
     --success-color: #28a745;    /* Verde suave */
     --sidebar-width: 250px;
@@ -22,6 +23,16 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
+}
+
+/* Estilos generales para enlaces */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 /* =========================================
@@ -118,6 +129,7 @@ body {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
 .nav-menu {
@@ -165,6 +177,7 @@ body {
     margin-left: var(--sidebar-width);
     padding: 2rem;
     width: calc(100% - var(--sidebar-width));
+    background-color: var(--background-color);
 }
 
 .dashboard-header {
@@ -196,6 +209,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
     overflow-x: auto;
+    margin-top: 1rem;
 }
 
 .employees-table {
@@ -217,7 +231,7 @@ body {
 }
 
 .employees-table tr:hover {
-    background-color: #FFF8DC;
+    background-color: var(--background-color);
 }
 
 /* =========================================
@@ -621,8 +635,8 @@ body {
     background-color: white;
     margin: 5% auto;
     padding: 2rem;
-    width: 90%;
-    max-width: 500px;
+    width: 80%;
+    max-width: 600px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
@@ -636,10 +650,14 @@ body {
     color: #666;
 }
 
+.close-button:hover {
+    color: #000;
+}
+
 .form-actions {
     display: flex;
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
 }
 
 .submit-button,
@@ -648,6 +666,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1rem;
     transition: background-color 0.3s ease;
 }
 
@@ -656,63 +675,37 @@ body {
     color: white;
 }
 
-.cancel-button {
-    background-color: #666;
-    color: white;
+.submit-button:hover {
+    background-color: #8B4513; /* Un poco más oscuro */
 }
 
-.submit-button:hover,
+.cancel-button {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
 .cancel-button:hover {
-    opacity: 0.9;
+    background-color: #e9ecef;
 }
 
 /* =========================================
    Estilos de Estados (Comunes)
    ========================================= */
 .status {
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
 }
 
-.status.active {
-    background-color: var(--success-color);
-    color: #2E7D32;
-}
-
-.status.inactive {
-    background-color: var(--error-color);
+.status.activo {
+    background-color: #28a745;
     color: white;
 }
 
-.status.completada {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.status.cancelada {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.status.pendiente {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.status.bajo {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.status.normal {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.status.alto {
-    background-color: #cce5ff;
-    color: #004085;
+.status.inactivo {
+    background-color: #dc3545;
+    color: white;
 }
 
 /* =========================================
@@ -721,29 +714,28 @@ body {
 .action-button {
     padding: 0.5rem 1rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
     margin-right: 0.5rem;
-    transition: background-color 0.3s ease;
+    font-size: 0.875rem;
 }
 
 .action-button.edit {
-    background-color: var(--primary-color);
+    background-color: #007bff;
     color: white;
+}
+
+.action-button.edit:hover {
+    background-color: #0056b3;
 }
 
 .action-button.delete {
-    background-color: var(--error-color);
+    background-color: #dc3545;
     color: white;
 }
 
-.action-button.print {
-    background-color: #6c757d;
-    color: white;
-}
-
-.action-button:hover {
-    opacity: 0.9;
+.action-button.delete:hover {
+    background-color: #c82333;
 }
 
 /* =========================================
@@ -907,4 +899,350 @@ body {
     border-radius: 4px;
     font-size: 0.875rem;
     font-weight: 500;
+}
+
+/* Estilos adicionales de empleados.css */
+.employees-table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.employees-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.employees-table th,
+.employees-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.employees-table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.employees-table tr:hover {
+    background-color: var(--background-color);
+}
+
+/* Estilos para el modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 2rem;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.close-button:hover {
+    color: #000;
+}
+
+/* Estilos para el formulario */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-text {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* Estilos para los botones */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.submit-button,
+.cancel-button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.submit-button:hover {
+    background-color: #8B4513; /* Un poco más oscuro */
+}
+
+.cancel-button {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.cancel-button:hover {
+    background-color: #e9ecef;
+}
+
+/* Estilos para los botones de acción en la tabla */
+.action-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.action-button.edit {
+    background-color: #007bff;
+    color: white;
+}
+
+.action-button.edit:hover {
+    background-color: #0056b3;
+}
+
+.action-button.delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.action-button.delete:hover {
+    background-color: #c82333;
+}
+
+/* Estilos para el estado */
+.status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.status.activo {
+    background-color: #28a745;
+    color: white;
+}
+
+.status.inactivo {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Estilos para la barra de búsqueda */
+.search-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.search-bar input,
+.search-bar select {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.search-bar input {
+    flex: 1;
+}
+
+.search-bar select {
+    min-width: 150px;
+}
+
+/* Estilos para las notificaciones */
+.notificacion {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    z-index: 1100;
+    animation: slideIn 0.3s ease-out;
+}
+
+.notificacion.success {
+    background-color: #28a745;
+}
+
+.notificacion.error {
+    background-color: #dc3545;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Estilos para la página de soporte */
+.support-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.faq-section {
+    margin-bottom: 2rem;
+}
+
+.faq-item {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+
+.faq-question {
+    font-weight: bold;
+    color: var(--primary-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-answer {
+    display: none;
+    padding-top: 1rem;
+    color: #666;
+}
+
+.contact-form {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
+    padding: 2rem;
+}
+
+/* Estilos para el Catálogo de Productos */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.product-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(139, 69, 19, 0.1);
+    padding: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.product-info {
+    text-align: center;
+}
+
+.product-price {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.product-description {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+/* Nuevos estilos para las secciones del tablero (Productos, Inventario, etc.) */
+.dashboard-section {
+    margin-bottom: 2rem;
+}
+
+.dashboard-section h3 {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-section p {
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-section a {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.dashboard-section a:hover {
+    text-decoration: underline;
 } 

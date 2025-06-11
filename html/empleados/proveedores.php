@@ -30,24 +30,25 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Proveedores - Sistema de Cafetería</title>
     <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="dashboard-container">
-        <nav class="sidebar">
+        <div class="sidebar">
             <div class="logo">
-                <h2>Sistema de Cafetería</h2>
+                <h2>Sistema de <br> Cafetería</h2>
             </div>
-            <ul class="nav-menu">
-                <li><a href="productos.php" class="nav-item">Productos</a></li>
-                <li><a href="inventario.php" class="nav-item">Inventario</a></li>
-                <li><a href="proveedores.php" class="nav-item active">Proveedores</a></li>
-                <li><a href="ventas.php" class="nav-item">Ventas</a></li>
-            </ul>
-            <div class="user-info">
-                <span class="user-name">Usuario: <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'Empleado'); ?></span>
-                <a href="../autenticacion/login.php" class="logout-button">Cerrar Sesión</a>
-            </div>
-        </nav>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="interfase_empleado.html" class="nav-item">Inicio</a></li>
+                    <li><a href="productos.php" class="nav-item">Productos</a></li>
+                    <li><a href="inventario.php" class="nav-item">Inventario</a></li>
+                    <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
+                    <li><a href="ventas.php" class="nav-item">Ventas</a></li>
+                    <li><a href="soporte.html" class="nav-item">Soporte</a></li>
+                </ul>
+            </nav>
+        </div>
         
         <main class="main-content">
             <header class="dashboard-header">
@@ -203,17 +204,13 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
                         <div class="form-group">
                             <label for="estado">Estado</label>
-                            <select id="estado" name="estado">
+                            <select id="estado" name="estado" required>
                                 <option value="activo">Activo</option>
                                 <option value="inactivo">Inactivo</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="notas">Notas Adicionales</label>
-                            <textarea id="notas" name="notas" rows="3"></textarea>
-                        </div>
                         <div class="form-actions">
-                            <button type="submit" class="submit-button">Guardar</button>
+                            <button type="submit" class="submit-button">Guardar Proveedor</button>
                             <button type="button" class="cancel-button" onclick="cerrarModal()">Cancelar</button>
                         </div>
                     </form>
@@ -221,136 +218,6 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </main>
     </div>
-    <script>
-        // Funciones para el modal
-        function mostrarFormulario() {
-            document.getElementById('modalTitle').textContent = 'Agregar Proveedor';
-            document.getElementById('supplierForm').reset();
-            document.getElementById('proveedor_id').value = '';
-            document.getElementById('supplierModal').style.display = 'block';
-        }
-
-        function cerrarModal() {
-            document.getElementById('supplierModal').style.display = 'none';
-        }
-
-        // Cerrar modal al hacer clic en el botón de cerrar
-        document.querySelector('.close-button').onclick = cerrarModal;
-
-        // Cerrar modal al hacer clic fuera del contenido
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('supplierModal')) {
-                cerrarModal();
-            }
-        }
-
-        // Función para editar proveedor
-        function editarProveedor(id) {
-            console.log('Editando proveedor con ID:', id);
-            document.getElementById('modalTitle').textContent = 'Editar Proveedor';
-            
-            // Realizar la petición AJAX para obtener los datos del proveedor
-            fetch(`../../php/obtener_proveedor.php?id=${id}`)
-                .then(response => {
-                    console.log('Respuesta del servidor:', response);
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Datos recibidos:', data);
-                    if (data.error) {
-                        alert(data.error);
-                        return;
-                    }
-                    
-                    // Llenar el formulario con los datos del proveedor
-                    document.getElementById('proveedor_id').value = data.id;
-                    document.getElementById('nombre').value = data.nombre || '';
-                    document.getElementById('contacto').value = data.contacto || '';
-                    document.getElementById('telefono').value = data.telefono || '';
-                    document.getElementById('email').value = data.email || '';
-                    document.getElementById('categoria').value = data.categoria || 'cafe';
-                    document.getElementById('direccion').value = data.direccion || '';
-                    document.getElementById('calificacion').value = data.calificacion || '0';
-                    document.getElementById('estado').value = data.estado || 'activo';
-                    document.getElementById('notas').value = data.notas || '';
-                    
-                    // Mostrar el modal
-                    document.getElementById('supplierModal').style.display = 'block';
-                })
-                .catch(error => {
-                    console.error('Error al cargar los datos:', error);
-                    alert('Error al cargar los datos del proveedor. Por favor, intente nuevamente.');
-                });
-        }
-
-        // Función para eliminar proveedor
-        function eliminarProveedor(id) {
-            if (confirm('¿Está seguro de que desea eliminar este proveedor?')) {
-                fetch(`../../php/eliminar_proveedor.php?id=${id}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Proveedor eliminado exitosamente');
-                            location.reload();
-                        } else {
-                            alert(data.error || 'Error al eliminar el proveedor');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error al eliminar el proveedor');
-                    });
-            }
-        }
-
-        // Manejar el envío del formulario
-        document.getElementById('supplierForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            fetch('../../php/guardar_proveedor.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    alert(data.error || 'Error al guardar el proveedor');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al guardar el proveedor');
-            });
-        });
-
-        // Función para filtrar proveedores
-        function filtrarProveedores() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const categoryFilter = document.getElementById('filterCategory').value;
-            const statusFilter = document.getElementById('filterStatus').value;
-            const ratingFilter = document.getElementById('filterRating').value;
-            
-            const rows = document.querySelectorAll('.suppliers-table tbody tr');
-            
-            rows.forEach(row => {
-                const nombre = row.cells[1].textContent.toLowerCase();
-                const categoria = row.cells[5].textContent.toLowerCase();
-                const estado = row.cells[7].textContent.toLowerCase();
-                const calificacion = parseInt(row.cells[6].querySelector('.rating').textContent);
-                
-                const matchesSearch = nombre.includes(searchTerm);
-                const matchesCategory = !categoryFilter || categoria === categoryFilter;
-                const matchesStatus = !statusFilter || estado === statusFilter;
-                const matchesRating = !ratingFilter || calificacion >= parseInt(ratingFilter);
-                
-                row.style.display = matchesSearch && matchesCategory && matchesStatus && matchesRating ? '' : 'none';
-            });
-        }
-    </script>
+    <script src="../../js/proveedores.js"></script>
 </body>
 </html> 

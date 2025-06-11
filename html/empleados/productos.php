@@ -30,24 +30,25 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Productos - Sistema de Cafetería</title>
     <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="dashboard-container">
-        <nav class="sidebar">
+        <div class="sidebar">
             <div class="logo">
-                <h2>Sistema de Cafetería</h2>
+                <h2>Sistema de <br> Cafetería</h2>
             </div>
-            <ul class="nav-menu">
-                <li><a href="productos.php" class="nav-item active">Productos</a></li>
-                <li><a href="inventario.php" class="nav-item">Inventario</a></li>
-                <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
-                <li><a href="ventas.php" class="nav-item">Ventas</a></li>
-            </ul>
-            <div class="user-info">
-                <span class="user-name">Usuario: <?php echo htmlspecialchars($_SESSION['nombre'] ?? 'Empleado'); ?></span>
-                <a href="../autenticacion/login.php" class="logout-button">Cerrar Sesión</a>
-            </div>
-        </nav>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="interfase_empleado.html" class="nav-item">Inicio</a></li>
+                    <li><a href="productos.php" class="nav-item">Productos</a></li>
+                    <li><a href="inventario.php" class="nav-item">Inventario</a></li>
+                    <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
+                    <li><a href="ventas.php" class="nav-item">Ventas</a></li>
+                    <li><a href="soporte.html" class="nav-item">Soporte</a></li>
+                </ul>
+            </nav>
+        </div>
         
         <main class="main-content">
             <header class="dashboard-header">
