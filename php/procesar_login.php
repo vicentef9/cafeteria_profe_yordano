@@ -21,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Redirigir según el rol
                 if ($usuario['rol'] === 'admin') {
-                    header("Location: ../html/admin/interfase_administrador.html");
+                    header("Location: ../html/empleados/productos.php");
                 } else {
-                    header("Location: ../html/empleados/interfase_empleado.html");
+                    header("Location: ../html/empleados/productos.php");
                 }
                 exit();
             } else {

@@ -40,7 +40,9 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="interfase_empleado.html" class="nav-item">Inicio</a></li>
+                    <li><a href="interfase_administrador.html" class="nav-item active">Inicio</a></li>
+                    <li><a href="catalogo.html" class="nav-item">Catálogo</a></li>
+                    <li><a href="admin_usuarios.php" class="nav-item active">Usuarios</a></li>
                     <li><a href="productos.php" class="nav-item">Productos</a></li>
                     <li><a href="inventario.php" class="nav-item">Inventario</a></li>
                     <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>

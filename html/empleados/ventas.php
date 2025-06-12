@@ -33,14 +33,16 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="dashboard-container">
+   <div class="dashboard-container">
         <div class="sidebar">
             <div class="logo">
                 <h2>Sistema de <br> Cafetería</h2>
             </div>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="interfase_empleado.html" class="nav-item">Inicio</a></li>
+                    <li><a href="interfase_administrador.html" class="nav-item active">Inicio</a></li>
+                    <li><a href="catalogo.html" class="nav-item">Catálogo</a></li>
+                    <li><a href="admin_usuarios.php" class="nav-item active">Usuarios</a></li>
                     <li><a href="productos.php" class="nav-item">Productos</a></li>
                     <li><a href="inventario.php" class="nav-item">Inventario</a></li>
                     <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
@@ -49,7 +51,6 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                 </ul>
             </nav>
         </div>
-
         <main class="main-content">
             <section class="dashboard-header">
                 <h1>Gestión de Ventas</h1>
