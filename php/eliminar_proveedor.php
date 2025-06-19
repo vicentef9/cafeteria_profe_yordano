@@ -9,10 +9,9 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'] ?? 0;
     try {
-        $id = intval($_GET['id']);
-        
         // Verificar si el proveedor existe
         $query = "SELECT id FROM proveedores WHERE id = :id";
         $stmt = $conn->prepare($query);
@@ -42,4 +41,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
     header('Content-Type: application/json');
     echo json_encode(['error' => 'Solicitud inválida']);
 }
-?> 
+?>

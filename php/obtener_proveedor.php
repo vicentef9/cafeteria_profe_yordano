@@ -21,10 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
         $proveedor = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($proveedor) {
-            header('Content-Type: application/json');
-            echo json_encode($proveedor);
+            echo json_encode(['success' => true, 'proveedor' => $proveedor]);
         } else {
-            throw new Exception('Proveedor no encontrado');
+            echo json_encode(['success' => false]);
         }
     } catch (Exception $e) {
         header('Content-Type: application/json');
@@ -33,4 +32,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
 } else {
     header('Content-Type: application/json');
     echo json_encode(['error' => 'Solicitud inválida']);
-} 
+}
