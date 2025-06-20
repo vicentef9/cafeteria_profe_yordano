@@ -8,55 +8,50 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
-// Verificar si es una petición POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $inventario_id = isset($_POST['inventario_id']) ? $_POST['inventario_id'] : null;
-    $producto_id = $_POST['producto_id'];
-    $stock_actual = $_POST['stock_actual'];
-    $stock_minimo = $_POST['stock_minimo'];
-    $precio_base = $_POST['precio_base'];
-    $descuento = isset($_POST['descuento']) ? $_POST['descuento'] : 0;
-    $notas = isset($_POST['notas']) ? $_POST['notas'] : '';
+// Validar que la petición sea POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo 'Método no permitido';
+    exit();
+}
 
-    // Verificar si es una actualización o una inserción
-    if (isset($_POST['inventario_id']) && !empty($_POST['inventario_id'])) {
-        // Actualizar registro existente
-        $query = "UPDATE inventario SET 
-                  producto_id = :producto_id,
-                  stock_actual = :stock_actual,
-                  stock_minimo = :stock_minimo,
-                  precio_base = :precio_base,
-                  descuento = :descuento,
-                  notas = :notas
-                  WHERE id = :id";
-        
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':id', $_POST['inventario_id'], PDO::PARAM_INT);
+// Validar y sanitizar datos
+$inventario_id = isset($_POST['inventario_id']) ? intval($_POST['inventario_id']) : null;
+$producto_id = isset($_POST['producto_id']) ? intval($_POST['producto_id']) : null;
+$stock_actual = isset($_POST['stock_actual']) ? intval($_POST['stock_actual']) : null;
+$stock_minimo = isset($_POST['stock_minimo']) ? intval($_POST['stock_minimo']) : null;
+$precio_base = isset($_POST['precio_base']) ? floatval($_POST['precio_base']) : null;
+$descuento = isset($_POST['descuento']) ? floatval($_POST['descuento']) : 0;
+$notas = isset($_POST['notas']) ? trim($_POST['notas']) : '';
+
+// Validaciones básicas
+if (!$producto_id || $stock_actual === null || $stock_minimo === null || $precio_base === null) {
+    echo 'Datos incompletos o inválidos.';
+    exit();
+}
+
+try {
+    if ($inventario_id) {
+        // Actualizar inventario existente
+        $sql = "UPDATE inventario SET producto_id = :producto_id, stock_actual = :stock_actual, stock_minimo = :stock_minimo, precio_base = :precio_base, descuento = :descuento, notas = :notas WHERE id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $inventario_id, PDO::PARAM_INT);
     } else {
-        // Insertar nuevo registro
-        $query = "INSERT INTO inventario 
-                  (producto_id, stock_actual, stock_minimo, precio_base, descuento, notas) 
-                  VALUES 
-                  (:producto_id, :stock_actual, :stock_minimo, :precio_base, :descuento, :notas)";
-        
-        $stmt = $conn->prepare($query);
+        // Insertar nuevo producto en inventario
+        $sql = "INSERT INTO inventario (producto_id, stock_actual, stock_minimo, precio_base, descuento, notas) VALUES (:producto_id, :stock_actual, :stock_minimo, :precio_base, :descuento, :notas)";
+        $stmt = $conn->prepare($sql);
     }
-
-    // Vincular parámetros
     $stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
     $stmt->bindParam(':stock_actual', $stock_actual, PDO::PARAM_INT);
     $stmt->bindParam(':stock_minimo', $stock_minimo, PDO::PARAM_INT);
-    $stmt->bindParam(':precio_base', $precio_base, PDO::PARAM_STR);
-    $stmt->bindParam(':descuento', $descuento, PDO::PARAM_INT);
-    $stmt->bindParam(':notas', $notas, PDO::PARAM_STR);
-
-    // Ejecutar la consulta
-    if ($stmt->execute()) {
-        echo "ok";
-    } else {
-        echo "Error al guardar los datos";
-    }
+    $stmt->bindParam(':precio_base', $precio_base);
+    $stmt->bindParam(':descuento', $descuento);
+    $stmt->bindParam(':notas', $notas);
+    $stmt->execute();
+    echo 'Inventario guardado correctamente.';
 } catch (PDOException $e) {
-    echo "Error en la base de datos: " . $e->getMessage();
+    http_response_code(500);
+    echo 'Error al guardar inventario: ' . $e->getMessage();
+    exit();
 }
-?> 
+?>

@@ -181,6 +181,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="form-group">
                             <label for="categoria">Categoría de Producto</label>
                             <select id="categoria" name="categoria" required>
+                                <option value="">Seleccionar categoría...</option>
                                 <option value="cafe">Café</option>
                                 <option value="postres">Postres</option>
                                 <option value="bebidas">Bebidas</option>
@@ -220,4 +221,4 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
     <script src="../../js/proveedores.js"></script>
 </body>
-</html> 
+</html>

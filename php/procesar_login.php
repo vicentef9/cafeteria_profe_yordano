@@ -13,20 +13,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute([$email]);
             $usuario = $stmt->fetch();
 
-            if ($usuario && password_verify($password, $usuario['password'])) {
-                // Iniciar sesión
-                $_SESSION['usuario_id'] = $usuario['id'];
-                $_SESSION['nombre_usuario'] = $usuario['nombre'] . ' ' . $usuario['apellido'];
-                $_SESSION['rol'] = $usuario['rol'];
-
-                // Redirigir según el rol
-                if ($usuario['rol'] === 'admin') {
-                    header("Location: ../html/empleados/productos.php");
+            if ($usuario) {
+                // Depuración: usuario encontrado
+                $_SESSION['debug'] = 'Usuario encontrado. Verificando contraseña...';
+                if (password_verify($password, $usuario['password'])) {
+                    // Iniciar sesión
+                    $_SESSION['usuario_id'] = $usuario['id'];
+                    $_SESSION['nombre_usuario'] = $usuario['nombre'] . ' ' . $usuario['apellido'];
+                    $_SESSION['rol'] = $usuario['rol'];
+                    unset($_SESSION['debug']);
+                    // Redirigir según el rol
+                    if ($usuario['rol'] === 'administrador') {
+                        header("Location: ../html/empleados/admin_usuarios.php");
+                    } else {
+                        header("Location: ../html/empleados/productos.php");
+                    }
+                    exit();
                 } else {
-                    header("Location: ../html/empleados/productos.php");
+                    // Depuración: contraseña incorrecta
+                    $_SESSION['debug'] = 'Contraseña incorrecta. Hash en BD: ' . $usuario['password'];
+                    $_SESSION['error'] = "Credenciales inválidas o usuario inactivo";
+                    header("Location: ../html/autenticacion/login.php");
+                    exit();
                 }
-                exit();
             } else {
+                // Depuración: usuario no encontrado
+                $_SESSION['debug'] = 'Usuario no encontrado o inactivo.';
                 $_SESSION['error'] = "Credenciales inválidas o usuario inactivo";
                 header("Location: ../html/autenticacion/login.php");
                 exit();
@@ -45,4 +57,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: ../html/autenticacion/login.php");
     exit();
 }
-?> 
+?>

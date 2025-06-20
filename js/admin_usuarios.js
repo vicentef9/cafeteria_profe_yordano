@@ -45,8 +45,9 @@ async function cargarUsuarios() {
 
         result.data.forEach(usuario => {
             const estadoClass = usuario.estado === 'activo' ? 'bg-success' : 'bg-danger';
+            const rowClass = usuario.estado === 'inactivo' ? 'usuario-inactivo' : '';
             empleadosTableBody.innerHTML += `
-                <tr>
+                <tr class="${rowClass}">
                     <td>${usuario.id}</td>
                     <td>${usuario.nombre}</td>
                     <td>${usuario.apellido}</td>
@@ -86,8 +87,8 @@ async function guardarUsuario() {
         
         const result = await response.json();
         
-        if (!result.success) {
-            throw new Error(result.message || 'Error al guardar usuario');
+        if (!result.success && !result.exito) {
+            throw new Error(result.message || result.mensaje || 'Error al guardar usuario');
         }
 
         alert(usuarioId ? 'Usuario actualizado exitosamente' : 'Usuario creado exitosamente');
@@ -118,7 +119,7 @@ async function editarUsuario(id) {
         document.getElementById('apellido').value = usuario.apellido;
         document.getElementById('email').value = usuario.email;
         document.getElementById('password').removeAttribute('required'); // Contraseña opcional al editar
-        document.getElementById('rol').value = usuario.rol;
+        document.getElementById('rol').value = usuario.rol === 'admin' ? 'administrador' : usuario.rol;
         document.getElementById('estado').value = usuario.estado;
         
         document.getElementById('userModal').style.display = 'block';
@@ -135,17 +136,16 @@ async function eliminarUsuario(id) {
     }
     
     try {
-        const response = await fetch(`../php/usuarios.php?accion=eliminar&id=${id}`, {
-            method: 'DELETE'
-        });
-        
+        // Usar GET para eliminar, ya que el backend espera GET
+        const response = await fetch(`../../php/usuarios.php?accion=eliminar&id=${id}`);
         const resultado = await response.json();
         
-        if (resultado.exito) {
+        if (resultado.success || resultado.exito) {
             alert('Usuario eliminado exitosamente');
             cargarUsuarios();
         } else {
-            alert('Error al eliminar usuario: ' + resultado.mensaje);
+            // Mostrar mensaje exacto del backend
+            alert('Error al eliminar usuario: ' + (resultado.message || resultado.mensaje || JSON.stringify(resultado)));
         }
     } catch (error) {
         console.error('Error al eliminar usuario:', error);

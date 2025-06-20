@@ -14,7 +14,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $rol = $_SESSION['rol'];
 
 // Verificar si el usuario tiene permisos para acceder a esta página
-if ($rol !== 'admin') {
+if ($rol !== 'administrador') {
     header('Location: ../autenticacion/login.php');
     exit();
 }
@@ -65,7 +65,7 @@ if ($rol !== 'admin') {
                         <label for="filterRole">Rol</label>
                         <select id="filterRole">
                             <option value="">Todos los roles</option>
-                            <option value="admin">Administrador</option>
+                            <option value="administrador">Administrador</option>
                             <option value="empleado">Empleado</option>
                         </select>
                     </div>
@@ -124,7 +124,7 @@ if ($rol !== 'admin') {
                         <div class="form-group">
                             <label for="rol">Rol</label>
                             <select id="rol" name="rol" required>
-                                <option value="admin">Administrador</option>
+                                <option value="administrador">Administrador</option>
                                 <option value="empleado">Empleado</option>
                             </select>
                         </div>

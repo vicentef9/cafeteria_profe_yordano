@@ -12,7 +12,7 @@ require_once 'conexion.php';
 ob_clean();
 
 // Verificar autenticación
-if (!isset($_SESSION['usuario_id']) || $_SESSION['rol'] !== 'admin') {
+if (!isset($_SESSION['usuario_id']) || $_SESSION['rol'] !== 'administrador') {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'No autorizado']);
     exit;
@@ -45,7 +45,7 @@ function validarUsuario($datos) {
     
     if (empty($datos['rol'])) {
         $errores[] = 'El rol es requerido';
-    } elseif (!in_array($datos['rol'], ['admin', 'empleado'])) {
+    } elseif (!in_array($datos['rol'], ['administrador', 'empleado'])) {
         $errores[] = 'El rol no es válido';
     }
     
@@ -207,8 +207,15 @@ switch ($accion) {
                 echo json_encode(['exito' => false, 'mensaje' => 'Usuario no encontrado']);
             }
         } catch (PDOException $e) {
-            http_response_code(500);
-            echo json_encode(['exito' => false, 'mensaje' => 'Error al eliminar usuario']);
+            // Si es error de clave foránea, desactivar usuario
+            if ($e->getCode() == '23000') {
+                $stmt = $conn->prepare("UPDATE empleados SET estado = 'inactivo' WHERE id = ?");
+                $stmt->execute([$_GET['id']]);
+                echo json_encode(['exito' => true, 'mensaje' => 'El usuario tiene registros asociados y fue desactivado (estado inactivo) en vez de eliminado.']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['exito' => false, 'mensaje' => 'Error al eliminar usuario: ' . $e->getMessage()]);
+            }
         }
         break;
         
