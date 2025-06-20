@@ -18,7 +18,7 @@ if ($rol !== 'empleado' && $rol !== 'admin') {
 }
 
 // Obtener datos de productos
-$query = "SELECT * FROM productos ORDER BY id";
+$query = "SELECT * FROM productos WHERE activo = 1 ORDER BY id";
 $stmt = $conn->prepare($query);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -163,4 +163,4 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
     <script src="../../js/productos.js"></script>
 </body>
-</html> 
+</html>

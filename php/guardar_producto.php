@@ -17,13 +17,15 @@ if (!isset($_POST['nombre']) || !isset($_POST['categoria'])) {
 }
 
 try {
-    $id = isset($_POST['producto_id']) ? $_POST['producto_id'] : null;
     $nombre = $_POST['nombre'];
     $categoria = $_POST['categoria'];
     $descripcion = $_POST['descripcion'] ?? null;
     $fecha_vencimiento = !empty($_POST['fecha_vencimiento']) ? $_POST['fecha_vencimiento'] : null;
 
-    if ($id) {
+    // Solo usar producto_id para UPDATE si es numérico y mayor que 0
+    $id = (isset($_POST['producto_id']) && is_numeric($_POST['producto_id']) && intval($_POST['producto_id']) > 0) ? intval($_POST['producto_id']) : null;
+
+    if ($id !== null) {
         // Actualizar producto existente
         $query = "UPDATE productos SET 
                   nombre = :nombre,
@@ -35,7 +37,7 @@ try {
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id);
     } else {
-        // Insertar nuevo producto
+        // Nunca usar producto_id en el INSERT, aunque llegue por POST
         $query = "INSERT INTO productos (nombre, categoria, descripcion, fecha_vencimiento)
                   VALUES (:nombre, :categoria, :descripcion, :fecha_vencimiento)";
         
@@ -57,4 +59,4 @@ try {
     header('Content-Type: application/json');
     echo json_encode(['error' => 'Error al guardar el producto: ' . $e->getMessage()]);
 }
-?> 
+?>

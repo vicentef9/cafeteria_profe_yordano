@@ -13,15 +13,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     $id = $_POST['id'];
 
     try {
-        $query = "DELETE FROM inventario WHERE id = ?";
+        $query = "UPDATE inventario SET estado = 'inactivo' WHERE id = :id";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $id);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
-            $_SESSION['mensaje'] = "Producto eliminado del inventario exitosamente";
+            $_SESSION['mensaje'] = "Producto deshabilitado del inventario exitosamente";
             $_SESSION['tipo_mensaje'] = "success";
         } else {
-            throw new Exception("Error al eliminar el producto del inventario");
+            throw new Exception("Error al deshabilitar el producto del inventario");
         }
     } catch (Exception $e) {
         $_SESSION['mensaje'] = "Error: " . $e->getMessage();
@@ -32,4 +32,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
 // Redirigir de vuelta a la página de inventario
 header('Location: ../html/empleados/inventario.html');
 exit();
-?> 
+?>

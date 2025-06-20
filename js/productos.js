@@ -34,9 +34,14 @@ function editarProducto(id) {
 
 // Función para eliminar un producto
 function eliminarProducto(id) {
-    if (confirm('¿Está seguro de que desea eliminar este producto?')) {
-        fetch(`../../php/eliminar_producto.php?id=${id}`, {
-            method: 'DELETE'
+    console.log('ID a eliminar:', id); // <-- Depuración
+    if (confirm('¿Está seguro de que desea eliminar este producto del inventario?')) {
+        fetch('../../php/eliminar_producto.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({ id: id })
         })
         .then(response => response.json())
         .then(data => {
@@ -44,11 +49,15 @@ function eliminarProducto(id) {
                 alert('Producto eliminado correctamente');
                 location.reload();
             } else {
-                alert(data.error || 'Error al eliminar el producto');
+                let msg = data.error || 'Error al eliminar el producto';
+                if (data.debug_post) {
+                    msg += '\nDebug POST: ' + JSON.stringify(data.debug_post);
+                }
+                alert(msg);
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error en fetch eliminarProducto:', error); // <-- Depuración
             alert('Error al eliminar el producto');
         });
     }
@@ -92,9 +101,13 @@ document.addEventListener('DOMContentLoaded', function() {
 // Función para guardar el producto
 function guardarProducto(event) {
     event.preventDefault();
-    
-    const formData = new FormData(document.getElementById('productForm'));
-    
+    const form = document.getElementById('productForm');
+    const formData = new FormData(form);
+    // Si el campo producto_id está vacío o es '0', eliminarlo del FormData para que no se envíe
+    const productoId = formData.get('producto_id');
+    if (!productoId || productoId === '0') {
+        formData.delete('producto_id');
+    }
     fetch('../../php/guardar_producto.php', {
         method: 'POST',
         body: formData
@@ -113,6 +126,5 @@ function guardarProducto(event) {
         console.error('Error:', error);
         alert('Error al guardar el producto');
     });
-
     return false;
-} 
+}

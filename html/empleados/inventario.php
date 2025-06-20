@@ -18,7 +18,9 @@ if ($rol !== 'empleado' && $rol !== 'admin') {
 }
 
 // Obtener datos del inventario
-$query = "SELECT i.*, p.nombre as producto_nombre, p.categoria \n          FROM inventario i \n          JOIN productos p ON i.producto_id = p.id";
+$query = "SELECT i.*, p.nombre as producto_nombre, p.categoria 
+          FROM inventario i 
+          JOIN productos p ON i.producto_id = p.id";
 $stmt = $conn->prepare($query);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -97,8 +99,8 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
 
-            <div class="inventory-table-container">
-                <table class="inventory-table">
+            <div class="suppliers-table-container">
+                <table class="suppliers-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -215,4 +217,4 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
     <script src="../../js/inventario.js"></script>
 </body>
-</html> 
+</html>

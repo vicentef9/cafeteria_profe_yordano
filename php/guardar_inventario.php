@@ -48,7 +48,8 @@ try {
     $stmt->bindParam(':descuento', $descuento);
     $stmt->bindParam(':notas', $notas);
     $stmt->execute();
-    echo 'Inventario guardado correctamente.';
+    echo 'ok';
+    exit();
 } catch (PDOException $e) {
     http_response_code(500);
     echo 'Error al guardar inventario: ' . $e->getMessage();
