@@ -26,9 +26,15 @@ $notas = isset($_POST['notas']) ? trim($_POST['notas']) : '';
 
 // Validaciones básicas
 if (!$producto_id || $stock_actual === null || $stock_minimo === null || $precio_base === null) {
-    echo 'Datos incompletos o inválidos.';
+    header('Content-Type: application/json');
+    echo json_encode([
+        "success" => false,
+        "error" => "Datos incompletos o inválidos."
+    ]);
     exit();
 }
+
+header('Content-Type: application/json');
 
 try {
     if ($inventario_id) {
@@ -48,11 +54,16 @@ try {
     $stmt->bindParam(':descuento', $descuento);
     $stmt->bindParam(':notas', $notas);
     $stmt->execute();
-    echo 'ok';
+    echo json_encode([
+        "success" => true,
+        "message" => "Guardado con éxito"
+    ]);
     exit();
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo 'Error al guardar inventario: ' . $e->getMessage();
+    echo json_encode([
+        "success" => false,
+        "error" => "Error al guardar inventario"
+    ]);
     exit();
 }
 ?>

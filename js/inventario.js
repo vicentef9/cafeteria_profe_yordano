@@ -51,25 +51,7 @@ function cargarInventario() {
         });
 }
 
-// Guardar producto en inventario
-function guardarInventario(e) {
-    e.preventDefault();
-    const formData = new FormData(document.getElementById('inventoryForm'));
-    fetch('../../php/guardar_inventario.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(res => res.text())
-    .then(data => {
-        if (data.trim() === "ok") {
-            alert("¡Inventario actualizado correctamente!");
-            window.location.reload();
-        } else {
-            alert("Error al guardar: " + data);
-        }
-        cerrarModal();
-    });
-}
+
 
 // Cargar productos en el select
 function cargarProductos() {
@@ -148,6 +130,29 @@ function actualizarPrecioFinal() {
     document.getElementById('precioFinal').textContent = precioFinal.toFixed(2);
 }
 
+// Función para guardar inventario
+function guardarInventario(e) {
+    e.preventDefault();
+    const formData = new FormData(document.getElementById('inventoryForm'));
+    fetch('../../php/guardar_inventario.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data && data.success === true) {
+            alert(data.message || 'Guardado con éxito');
+            cerrarModal();
+            window.location.reload();
+        } else {
+            alert((data && data.error) ? data.error : 'Error al guardar inventario');
+        }
+    })
+    .catch(error => {
+        alert('Error de red o de servidor: ' + error);
+    });
+}
+
 // Eventos
 document.addEventListener('DOMContentLoaded', function() {
     cargarInventario();
@@ -197,4 +202,4 @@ function filtrarInventario() {
 
         row.style.display = matchesSearch && matchesCategory && matchesStock && matchesDiscount ? '' : 'none';
     });
-} 
+}

@@ -18,12 +18,17 @@ if ($rol !== 'empleado' && $rol !== 'admin') {
 }
 
 // Obtener datos del inventario
-$query = "SELECT i.*, p.nombre as producto_nombre, p.categoria 
-          FROM inventario i 
-          JOIN productos p ON i.producto_id = p.id";
-$stmt = $conn->prepare($query);
-$stmt->execute();
-$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    $query = "SELECT i.*, p.nombre as producto_nombre, p.categoria 
+              FROM inventario i 
+              JOIN productos p ON i.producto_id = p.id";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "<div style='color:red; font-weight:bold;'>No se pudo conectar a la base de datos. Verifique que el servidor MySQL esté en ejecución y la configuración sea correcta.<br>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
+    $result = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -115,7 +120,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="inventarioBody">
                         <?php
                         if (count($result) > 0) {
                             foreach($result as $row) {
