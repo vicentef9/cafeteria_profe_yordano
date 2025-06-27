@@ -246,32 +246,6 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Horario de Atención</h3>
-                <ul>
-                    <li>Lunes a Viernes: 7:00 AM - 8:00 PM</li>
-                    <li>Sábados: 8:00 AM - 6:00 PM</li>
-                    <li>Domingos: 9:00 AM - 4:00 PM</li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contacto</h3>
-                <ul>
-                    <li>Teléfono: (123) 456-7890</li>
-                    <li>Email: info@cafeteria.com</li>
-                    <li>Dirección: Calle Principal #123</li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Enlaces Rápidos</h3>
-                <ul>
-                    <li><a href="productos.php">Productos</a></li>
-                    <li><a href="inventario.html">Inventario</a></li>
-                    <li><a href="proveedores.html">Proveedores</a></li>
-                </ul>
-            </div>
-        </div>
         <div class="footer-bottom">
             <p>&copy; 2024 Sistema de Cafetería. Todos los derechos reservados.</p>
         </div>
