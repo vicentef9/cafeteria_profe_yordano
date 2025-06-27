@@ -31,17 +31,18 @@
             <h1>Catálogo de Productos</h1>
             
             <div class="search-bar">
-                <input type="text" placeholder="Buscar producto...">
-                <select>
+                <input type="text" id="searchInput" placeholder="Buscar producto...">
+                <select id="categoryFilter">
                     <option value="">Todas las categorías</option>
+                    <option value="cafe">Café</option>
                     <option value="bebidas">Bebidas</option>
-                    <option value="alimentos">Alimentos</option>
                     <option value="postres">Postres</option>
+                    <option value="insumos">Insumos</option>
                 </select>
             </div>
 
-            <div class="card-container">
-                <div class="card">
+            <div class="card-container" id="cardContainer">
+                <div class="card" data-category="cafe" data-name="café americano">
                     <div class="card-front">
                         <img src="../../img/Cafe-americano-portada.webp" alt="Café Americano" class="card-img">
                         <h3>Café Americano</h3>
@@ -52,7 +53,7 @@
                         <button class="card-btn" onclick="flipCard(this)">Volver</button>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card" data-category="cafe" data-name="capuchino">
                     <div class="card-front">
                         <img src="../../img/Cappuccino_PeB.jpg" alt="Capuchino" class="card-img">
                         <h3>Capuchino</h3>
@@ -63,7 +64,7 @@
                         <button class="card-btn" onclick="flipCard(this)">Volver</button>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card" data-category="postres" data-name="sandwich de jamón">
                     <div class="card-front">
                         <img src="../../img/sandwich-de-jamon-y-queso.webp" alt="Sandwich de Jamón" class="card-img">
                         <h3>Sandwich de Jamón</h3>
@@ -74,16 +75,108 @@
                         <button class="card-btn" onclick="flipCard(this)">Volver</button>
                     </div>
                 </div>
-                <!-- Puedes agregar más tarjetas aquí -->
+            </div>
+
+            <!-- Mensaje cuando no hay resultados -->
+            <div id="noResults" class="no-results" style="display: none;">
+                <p>No se encontraron productos que coincidan con los filtros seleccionados.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // Aquí irá la lógica para cargar los productos dinámicamente
+        // Función para voltear las tarjetas
         function flipCard(btn) {
-          const card = btn.closest('.card');
-          card.classList.toggle('flipped');
+            const card = btn.closest('.card');
+            card.classList.toggle('flipped');
+        }
+
+        // Función para filtrar productos
+        function filtrarProductos() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            const noResults = document.getElementById('noResults');
+            let visibleCards = 0;
+
+            cards.forEach(card => {
+                const cardName = card.getAttribute('data-name').toLowerCase();
+                const cardCategory = card.getAttribute('data-category').toLowerCase();
+                
+                const matchesSearch = !searchTerm || cardName.includes(searchTerm);
+                const matchesCategory = !categoryFilter || cardCategory === categoryFilter;
+                
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'block';
+                    visibleCards++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Mostrar mensaje si no hay resultados
+            if (visibleCards === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+
+        // Función para limpiar filtros
+        function limpiarFiltros() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            filtrarProductos();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filtro por búsqueda en tiempo real
+            document.getElementById('searchInput').addEventListener('input', filtrarProductos);
+            
+            // Filtro por categoría
+            document.getElementById('categoryFilter').addEventListener('change', filtrarProductos);
+            
+            // Inicializar vista
+            filtrarProductos();
+        });
+
+        // Función para cargar productos dinámicamente (para implementación futura)
+        function cargarProductosDinamicos() {
+            fetch('../../php/obtener_productos_catalogo.php')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('cardContainer');
+                    container.innerHTML = '';
+                    
+                    data.forEach(producto => {
+                        const card = document.createElement('div');
+                        card.className = 'card';
+                        card.setAttribute('data-category', producto.categoria.toLowerCase());
+                        card.setAttribute('data-name', producto.nombre.toLowerCase());
+                        
+                        card.innerHTML = `
+                            <div class="card-front">
+                                <img src="${producto.imagen || '../../img/default-product.jpg'}" alt="${producto.nombre}" class="card-img">
+                                <h3>${producto.nombre}</h3>
+                                <button class="card-btn" onclick="flipCard(this)">Ver detalles</button>
+                            </div>
+                            <div class="card-back">
+                                <p>${producto.descripcion || 'Sin descripción disponible'}</p>
+                                <p><strong>Precio: CLP ${producto.precio}</strong></p>
+                                <button class="card-btn" onclick="flipCard(this)">Volver</button>
+                            </div>
+                        `;
+                        
+                        container.appendChild(card);
+                    });
+                    
+                    // Aplicar filtros después de cargar
+                    filtrarProductos();
+                })
+                .catch(error => {
+                    console.error('Error al cargar productos:', error);
+                });
         }
     </script>
 </body>

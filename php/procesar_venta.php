@@ -2,91 +2,85 @@
 session_start();
 require_once '../config/database.php';
 
-// Verificar si el usuario está logueado
+header('Content-Type: application/json');
+
 if (!isset($_SESSION['usuario_id'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'No autorizado']);
-    exit();
-}
-
-// Verificar si es una petición POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'Método no permitido']);
-    exit();
-}
-
-// Obtener y validar datos de la venta
-$data = json_decode(file_get_contents('php://input'), true);
-
-if (!isset($data['productos']) || !isset($data['metodo_pago'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'Datos incompletos']);
+    echo json_encode(['success' => false, 'error' => 'Usuario no autenticado']);
     exit();
 }
 
 try {
-    // Iniciar transacción
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$input || !isset($input['productos']) || empty($input['productos'])) {
+        echo json_encode(['success' => false, 'error' => 'Datos de venta inválidos']);
+        exit();
+    }
+
     $conn->beginTransaction();
 
-    // Insertar la venta
-    $query_venta = "INSERT INTO ventas (empleado_id, total, metodo_pago) VALUES (:empleado_id, :total, :metodo_pago)";
-    $stmt_venta = $conn->prepare($query_venta);
-    
+    // Calcular total
     $total = 0;
-    foreach ($data['productos'] as $producto) {
-        $total += $producto['cantidad'] * $producto['precio'];
+    foreach ($input['productos'] as $producto) {
+        $total += $producto['subtotal'];
     }
 
-    $stmt_venta->bindParam(':empleado_id', $_SESSION['usuario_id']);
-    $stmt_venta->bindParam(':total', $total);
-    $stmt_venta->bindParam(':metodo_pago', $data['metodo_pago']);
-    $stmt_venta->execute();
+    // Determinar estado basado en disponibilidad de stock
+    $estado = 'completada';
+    $productosInsuficientes = [];
 
+    // Verificar stock disponible para cada producto
+    foreach ($input['productos'] as $producto) {
+        $stmt = $conn->prepare("SELECT stock_actual FROM inventario WHERE producto_id = ?");
+        $stmt->execute([$producto['id']]);
+        $stock = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$stock || $stock['stock_actual'] < $producto['cantidad']) {
+            $productosInsuficientes[] = $producto['nombre'];
+            $estado = 'pendiente'; // Cambiar estado si hay productos sin stock suficiente
+        }
+    }
+
+    // Insertar venta
+    $stmt = $conn->prepare("INSERT INTO ventas (usuario_id, total, metodo_pago, estado, fecha_venta) VALUES (?, ?, ?, ?, NOW())");
+    $stmt->execute([$_SESSION['usuario_id'], $total, $input['metodo_pago'], $estado]);
     $venta_id = $conn->lastInsertId();
 
-    // Insertar detalles de la venta
-    $query_detalle = "INSERT INTO detalles_venta (venta_id, producto_id, cantidad, precio_unitario, subtotal) 
-                      VALUES (:venta_id, :producto_id, :cantidad, :precio_unitario, :subtotal)";
-    $stmt_detalle = $conn->prepare($query_detalle);
+    // Insertar detalles de venta y actualizar inventario
+    foreach ($input['productos'] as $producto) {
+        // Insertar detalle de venta
+        $stmt = $conn->prepare("INSERT INTO detalle_ventas (venta_id, producto_id, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([
+            $venta_id,
+            $producto['id'],
+            $producto['cantidad'],
+            $producto['precio'],
+            $producto['subtotal']
+        ]);
 
-    foreach ($data['productos'] as $producto) {
-        $subtotal = $producto['cantidad'] * $producto['precio'];
-        
-        $stmt_detalle->bindParam(':venta_id', $venta_id);
-        $stmt_detalle->bindParam(':producto_id', $producto['id']);
-        $stmt_detalle->bindParam(':cantidad', $producto['cantidad']);
-        $stmt_detalle->bindParam(':precio_unitario', $producto['precio']);
-        $stmt_detalle->bindParam(':subtotal', $subtotal);
-        $stmt_detalle->execute();
-
-        // Actualizar inventario
-        $query_inventario = "UPDATE inventario 
-                            SET stock_actual = stock_actual - :cantidad 
-                            WHERE producto_id = :producto_id";
-        $stmt_inventario = $conn->prepare($query_inventario);
-        $stmt_inventario->bindParam(':cantidad', $producto['cantidad']);
-        $stmt_inventario->bindParam(':producto_id', $producto['id']);
-        $stmt_inventario->execute();
+        // Solo actualizar inventario si el estado es completada
+        if ($estado === 'completada') {
+            $stmt = $conn->prepare("UPDATE inventario SET stock_actual = stock_actual - ? WHERE producto_id = ?");
+            $stmt->execute([$producto['cantidad'], $producto['id']]);
+        }
     }
 
-    // Confirmar transacción
     $conn->commit();
 
-    header('Content-Type: application/json');
-    echo json_encode([
-        'success' => true,
-        'message' => 'Venta procesada correctamente',
-        'venta_id' => $venta_id
-    ]);
+    $response = [
+        'success' => true, 
+        'venta_id' => $venta_id,
+        'estado' => $estado
+    ];
+
+    if (!empty($productosInsuficientes)) {
+        $response['mensaje'] = 'Algunos productos tienen stock insuficiente: ' . implode(', ', $productosInsuficientes) . '. La venta quedó como pendiente.';
+    }
+
+    echo json_encode($response);
 
 } catch (Exception $e) {
-    // Revertir transacción en caso de error
     $conn->rollBack();
-    
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => 'Error al procesar la venta: ' . $e->getMessage()
-    ]);
+    echo json_encode(['success' => false, 'error' => 'Error al procesar venta: ' . $e->getMessage()]);
 }
-?> 
+?>

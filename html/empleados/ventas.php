@@ -326,6 +326,131 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
             actualizarCarrito();
         }
 
+        function actualizarTablaVentas(ventas) {
+            console.log('Datos recibidos en actualizarTablaVentas:', ventas);
+            const tbody = document.getElementById('ventasTableBody');
+            tbody.innerHTML = '';
+            
+            ventas.forEach(venta => {
+                const row = document.createElement('tr');
+                const totalVenta = parseFloat(venta.total || 0).toFixed(0);
+                
+                // Definir clase CSS para el estado
+                const estadoClass = getEstadoClass(venta.estado);
+                
+                row.innerHTML = `
+                    <td>#${venta.id.toString().padStart(3, '0')}</td>
+                    <td>${venta.fecha_venta}</td>
+                    <td>
+                        <button class="view-details" onclick="mostrarDetalles(${venta.id})">Ver Detalles</button>
+                    </td>
+                    <td>CLP ${totalVenta}</td>
+                    <td>${venta.metodo_pago}</td>
+                    <td>
+                        <select class="status-select ${estadoClass}" onchange="cambiarEstado(${venta.id}, this.value, '${venta.estado}')">
+                            <option value="pendiente" ${venta.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                            <option value="completada" ${venta.estado === 'completada' ? 'selected' : ''}>Completada</option>
+                            <option value="cancelada" ${venta.estado === 'cancelada' ? 'selected' : ''}>Cancelada</option>
+                        </select>
+                    </td>
+                    <td>${venta.empleado_nombre}</td>
+                    <td>${venta.notas || 'N/A'}</td>
+                    <td>
+                        <button class="action-button view" onclick="mostrarDetalles(${venta.id})">Ver</button>
+                        <button class="action-button print" onclick="imprimirTicket(${venta.id})">Imprimir</button>
+                        ${venta.estado === 'cancelada' ? '' : `<button class="action-button cancel" onclick="cancelarVenta(${venta.id})">Cancelar</button>`}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getEstadoClass(estado) {
+            switch(estado) {
+                case 'completada': return 'completada';
+                case 'pendiente': return 'pendiente';
+                case 'cancelada': return 'cancelada';
+                default: return '';
+            }
+        }
+
+        function cambiarEstado(ventaId, nuevoEstado, estadoAnterior) {
+            if (nuevoEstado === estadoAnterior) return;
+            
+            const confirmacion = confirm(`¿Está seguro de cambiar el estado de la venta #${ventaId.toString().padStart(3, '0')} a "${nuevoEstado}"?`);
+            
+            if (!confirmacion) {
+                // Revertir la selección
+                const select = event.target;
+                select.value = estadoAnterior;
+                return;
+            }
+
+            const data = {
+                venta_id: ventaId,
+                nuevo_estado: nuevoEstado,
+                estado_anterior: estadoAnterior
+            };
+
+            fetch('../../php/actualizar_estado_venta.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Estado actualizado correctamente');
+                    cargarVentas(); // Recargar la tabla
+                } else {
+                    alert('Error: ' + data.error);
+                    // Revertir la selección en caso de error
+                    const select = event.target;
+                    select.value = estadoAnterior;
+                }
+            })
+            .catch(error => {
+                alert('Error al actualizar estado: ' + error);
+                // Revertir la selección en caso de error
+                const select = event.target;
+                select.value = estadoAnterior;
+            });
+        }
+
+        function cancelarVenta(ventaId) {
+            const confirmacion = confirm(`¿Está seguro de cancelar la venta #${ventaId.toString().padStart(3, '0')}?`);
+            
+            if (!confirmacion) return;
+
+            const data = {
+                venta_id: ventaId,
+                nuevo_estado: 'cancelada',
+                estado_anterior: 'completada' // Asumimos que se está cancelando una venta completada
+            };
+
+            fetch('../../php/actualizar_estado_venta.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Venta cancelada correctamente');
+                    cargarVentas();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                alert('Error al cancelar venta: ' + error);
+            });
+        }
+
         function procesarVenta(event) {
             event.preventDefault();
             
@@ -351,7 +476,11 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Venta procesada con éxito');
+                    let mensaje = 'Venta procesada con éxito';
+                    if (data.estado === 'pendiente') {
+                        mensaje += '. Estado: PENDIENTE - ' + (data.mensaje || 'Revisar stock de productos');
+                    }
+                    alert(mensaje);
                     cerrarModal();
                     cargarVentas();
                 } else {
@@ -481,36 +610,6 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                 .catch(error => {
                     alert('Error al filtrar ventas: ' + error);
                 });
-        }
-
-        function actualizarTablaVentas(ventas) {
-            console.log('Datos recibidos en actualizarTablaVentas:', ventas);
-            const tbody = document.getElementById('ventasTableBody');
-            console.log('Elemento tbody:', tbody);
-            tbody.innerHTML = '';
-            
-            ventas.forEach(venta => {
-                const row = document.createElement('tr');
-                const totalVenta = parseFloat(venta.total || 0).toFixed(0);
-                
-                row.innerHTML = `
-                    <td>#${venta.id.toString().padStart(3, '0')}</td>
-                    <td>${venta.fecha_venta}</td>
-                    <td>
-                        <button class="view-details" onclick="mostrarDetalles(${venta.id})">Ver Detalles</button>
-                    </td>
-                    <td>CLP ${totalVenta}</td>
-                    <td>${venta.metodo_pago}</td>
-                    <td><span class="status ${venta.estado}">${venta.estado}</span></td>
-                    <td>${venta.empleado_nombre}</td>
-                    <td>${venta.notas || 'N/A'}</td>
-                    <td>
-                        <button class="action-button view" onclick="mostrarDetalles(${venta.id})">Ver</button>
-                        <button class="action-button print" onclick="imprimirTicket(${venta.id})">Imprimir</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
         }
 
         function actualizarEstadisticas(stats) {

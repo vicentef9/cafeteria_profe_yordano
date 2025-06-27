@@ -170,6 +170,23 @@ body, .main-content {
     border-color: #3a7bd5;
 }
 
+/* Mensaje de no resultados */
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+    font-style: italic;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e0e6ed;
+    margin-top: 20px;
+}
+
+.no-results p {
+    margin: 0;
+    font-size: 1.1em;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
     .card-container {
