@@ -29,7 +29,8 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Proveedores - Sistema de Cafetería</title>
-    <link rel="stylesheet" href="../../css/styles-proveedores.css?v=1">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/styles-proveedores.css">
 </head>
 <body>
     <div class="dashboard-container">

@@ -1,2 +1,322 @@
-/* Copia base de styles.css para panel de productos */
-/* ...existing code from styles.css... */
+/* =========================
+   Estilos de Productos - Cafetería
+   ========================= */
+
+/* Fondo y contenedores */
+body, .main-content {
+    background: #f1f3f6 !important;
+}
+
+.products-table-container {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 1px 10px rgba(58,123,213,0.06);
+    padding: 24px 24px 12px 24px;
+    margin-bottom: 32px;
+    border: 1px solid #e0e6ed;
+}
+
+/* Barra de búsqueda y filtros */
+.search-filters {
+    background: #f8fafc;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(58,123,213,0.04);
+    padding: 18px 24px 8px 24px;
+    margin-bottom: 28px;
+    border: 1px solid #e0e6ed;
+}
+
+.search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.search-bar input {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+    flex: 1;
+}
+
+.search-bar select {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+    min-width: 150px;
+}
+
+.search-button {
+    background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.search-button:hover {
+    background: #3a7bd5;
+}
+
+.filters-container {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-group label {
+    font-weight: 500;
+    color: #3a7bd5;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.filter-group select {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+}
+
+/* Tabla de productos */
+.products-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+}
+
+.products-table th, .products-table td {
+    padding: 14px 10px;
+    text-align: left;
+}
+
+.products-table th {
+    background: #3a7bd5;
+    color: #fff;
+    font-weight: 600;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.products-table tr {
+    background: #f8fafc;
+    transition: background 0.2s;
+}
+
+.products-table tr:hover {
+    background: #e3e8ef;
+}
+
+.products-table td {
+    border-bottom: 1px solid #e0e6ed;
+    font-size: 1em;
+}
+
+.no-data {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    background: #f1f3f6;
+}
+
+/* Botones de acción */
+.action-button {
+    border: none;
+    border-radius: 7px;
+    padding: 7px 14px;
+    margin: 2px 0;
+    font-size: 0.98em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.action-button.edit {
+    background: #ffc107;
+    color: #222;
+}
+
+.action-button.edit:hover {
+    background: #ffb300;
+}
+
+.action-button.delete {
+    background: #dc3545;
+    color: #fff;
+}
+
+.action-button.delete:hover {
+    background: #b71c1c;
+}
+
+/* Modal */
+#productModal .modal-content {
+    background: #f8fafc;
+    border-radius: 16px;
+    box-shadow: 0 2px 24px rgba(58,123,213,0.10);
+    border: 1px solid #e0e6ed;
+    padding: 32px 28px;
+    max-width: 480px;
+}
+
+#productModal h2 {
+    color: #3a7bd5;
+    margin-bottom: 18px;
+}
+
+.close-button {
+    float: right;
+    font-size: 1.5em;
+    color: #888;
+    cursor: pointer;
+    margin-top: -12px;
+}
+
+.close-button:hover {
+    color: #dc3545;
+}
+
+/* Formulario del modal */
+#productForm .form-group label {
+    font-weight: 500;
+    color: #3a7bd5;
+}
+
+#productForm .form-group input,
+#productForm .form-group select,
+#productForm .form-group textarea {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+#productForm .form-group input:focus,
+#productForm .form-group select:focus,
+#productForm .form-group textarea:focus {
+    outline: none;
+    border-color: #3a7bd5;
+}
+
+#productForm .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+#productForm .submit-button {
+    background: #3a7bd5;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#productForm .submit-button:hover {
+    background: #2563a6;
+}
+
+#productForm .cancel-button {
+    background: #b0b0b0;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#productForm .cancel-button:hover {
+    background: #888;
+}
+
+/* Estilos para el Catálogo de Productos */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.product-card {
+    background: #f8fafc;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(58,123,213,0.08);
+    padding: 1rem;
+    transition: transform 0.3s ease;
+    border: 1px solid #e0e6ed;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.product-info {
+    text-align: center;
+}
+
+.product-price {
+    color: #3a7bd5;
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.product-description {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .filters-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .main-content {
+        padding: 18px 6vw 18px 6vw;
+    }
+    
+    .products-table-container {
+        padding: 14px 6vw;
+    }
+    
+    #productModal .modal-content {
+        max-width: 98vw;
+        padding: 18px 6vw;
+    }
+    
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+}

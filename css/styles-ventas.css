@@ -1,2 +1,437 @@
-/* Copia base de styles.css para panel de ventas */
-/* ...existing code from styles.css... */
+/* =========================
+   Estilos de Ventas - Cafetería
+   ========================= */
+
+/* Fondo principal */
+body, .main-content {
+    background: #f1f3f6 !important;
+}
+
+/* Cards resumen de ventas */
+.sales-summary {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #f8fafc 60%, #e3e8ef 100%);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(58,123,213,0.06);
+    padding: 24px 32px;
+    min-width: 220px;
+    flex: 1 1 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    border: 1px solid #e0e6ed;
+    transition: box-shadow 0.2s;
+}
+
+.summary-card h3 {
+    font-size: 1.1em;
+    color: #3a7bd5;
+    margin-bottom: 8px;
+}
+
+.summary-card .amount {
+    font-size: 1.7em;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 4px;
+}
+
+.summary-card .sub-info {
+    font-size: 0.98em;
+    color: #5c6b7a;
+}
+
+/* Filtros y barra de búsqueda */
+.search-filters {
+    background: #f8fafc;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(58,123,213,0.04);
+    padding: 18px 24px 8px 24px;
+    margin-bottom: 28px;
+    border: 1px solid #e0e6ed;
+}
+
+.search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.search-bar input {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+    flex: 1;
+}
+
+.search-bar select {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+    min-width: 150px;
+}
+
+.search-button {
+    background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.search-button:hover {
+    background: #3a7bd5;
+}
+
+.filters-container {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-group label {
+    font-weight: 500;
+    color: #3a7bd5;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.filter-group select {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+}
+
+/* Tabla de ventas */
+.sales-table-container {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 1px 10px rgba(58,123,213,0.06);
+    padding: 24px 24px 12px 24px;
+    margin-bottom: 32px;
+    border: 1px solid #e0e6ed;
+}
+
+.sales-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+}
+
+.sales-table th, .sales-table td {
+    padding: 14px 10px;
+    text-align: left;
+}
+
+.sales-table th {
+    background: #3a7bd5;
+    color: #fff;
+    font-weight: 600;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.sales-table tr {
+    background: #f8fafc;
+    transition: background 0.2s;
+}
+
+.sales-table tr:hover {
+    background: #e3e8ef;
+}
+
+.sales-table td {
+    border-bottom: 1px solid #e0e6ed;
+    font-size: 1em;
+}
+
+/* Estados de venta */
+.status.completada {
+    background: #28a745;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.98em;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status.cancelada {
+    background: #dc3545;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.98em;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status.pendiente {
+    background: #ffc107;
+    color: #222;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.98em;
+    font-weight: 500;
+    display: inline-block;
+}
+
+/* Botones de acción */
+.action-button, .view-details, .print {
+    border: none;
+    border-radius: 7px;
+    padding: 7px 14px;
+    margin: 2px 0;
+    font-size: 0.98em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.action-button.view, .view-details {
+    background: #3a7bd5;
+    color: #fff;
+}
+
+.action-button.view:hover, .view-details:hover {
+    background: #2563a6;
+}
+
+.action-button.print {
+    background: #00d2ff;
+    color: #fff;
+}
+
+.action-button.print:hover {
+    background: #3a7bd5;
+}
+
+/* Productos populares */
+.productos-populares {
+    background: #f8fafc;
+    border-radius: 12px;
+    box-shadow: 0 1px 8px rgba(58,123,213,0.04);
+    padding: 18px 24px;
+    border: 1px solid #e0e6ed;
+    margin-bottom: 32px;
+}
+
+.productos-populares h2 {
+    color: #3a7bd5;
+    margin-bottom: 10px;
+}
+
+#productosPopulares {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#productosPopulares li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e6ed;
+    font-size: 1em;
+}
+
+#productosPopulares li:last-child {
+    border-bottom: none;
+}
+
+.producto-nombre {
+    font-weight: 500;
+    color: #222;
+}
+
+.producto-cantidad {
+    color: #3a7bd5;
+    margin-left: 12px;
+}
+
+.producto-porcentaje {
+    color: #00b894;
+    margin-left: 12px;
+    font-size: 0.95em;
+}
+
+/* Modal de venta */
+#saleModal .modal-content, #detailsModal .modal-content {
+    background: #f8fafc;
+    border-radius: 16px;
+    box-shadow: 0 2px 24px rgba(58,123,213,0.10);
+    border: 1px solid #e0e6ed;
+    padding: 32px 28px;
+    max-width: 480px;
+}
+
+#saleModal h2, #detailsModal h2 {
+    color: #3a7bd5;
+    margin-bottom: 18px;
+}
+
+.cart-summary {
+    background: #e3e8ef;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 18px 0;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+}
+
+.cart-item button {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 3px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 0.95em;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-top: 10px;
+}
+
+.add-to-cart-button {
+    background: #00d2ff;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 18px;
+    font-size: 1em;
+    margin-right: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-to-cart-button:hover {
+    background: #3a7bd5;
+}
+
+/* Modal detalles */
+.detail-group label {
+    font-weight: 500;
+    color: #3a7bd5;
+    margin-right: 8px;
+}
+
+.detail-group {
+    margin-bottom: 8px;
+}
+
+.details-table th, .details-table td {
+    padding: 7px 10px;
+    font-size: 0.98em;
+}
+
+.details-table th {
+    background: #e3e8ef;
+    color: #3a7bd5;
+}
+
+.details-table tr {
+    background: #f8fafc;
+}
+
+.details-table tr:hover {
+    background: #e3e8ef;
+}
+
+.detail-total {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Footer */
+footer {
+    background: #e3e8ef;
+    color: #3a7bd5;
+    padding: 24px 0 0 0;
+    margin-top: 40px;
+    border-top: 1px solid #dbe3ea;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding-bottom: 18px;
+}
+
+.footer-section h3 {
+    color: #3a7bd5;
+    margin-bottom: 8px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    color: #222;
+}
+
+.footer-bottom {
+    text-align: center;
+    color: #5c6b7a;
+    font-size: 0.98em;
+    padding: 10px 0;
+    background: #dde3ea;
+    border-top: 1px solid #dbe3ea;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .sales-summary, .filters-container, .footer-content {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .main-content {
+        padding: 18px 6vw 18px 6vw;
+    }
+    
+    .sales-table-container, .productos-populares {
+        padding: 14px 6vw;
+    }
+    
+    #saleModal .modal-content, #detailsModal .modal-content {
+        max-width: 98vw;
+        padding: 18px 6vw;
+    }
+}
