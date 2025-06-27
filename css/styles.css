@@ -1671,10 +1671,14 @@ body, .main-content {
     transform: scale(1.04);
 }
 
-#mensaje {
-    resize: none !important;
-    min-height: 100px;
-    max-height: 100px;
+/* Responsive */
+@media (max-width: 900px) {
+    .support-container {
+        padding: 14px 4vw;
+    }
+    .contact-form {
+        padding: 1rem 2vw;
+    }
 }
 
 /* =========================================
@@ -1683,10 +1687,4 @@ body, .main-content {
 .usuario-inactivo {
     background-color: #f2f2f2 !important;
     color: #888;
-}
-
-/* FORZADO PARA TEST VISUAL MODAL PROVEEDORES */
-#supplierModal .modal-content {
-    border: 6px dashed #e53935 !important;
-    background: #fff176 !important;
 }
