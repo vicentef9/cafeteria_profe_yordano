@@ -36,7 +36,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Inventario - Sistema de Cafetería</title>
-    <link rel="stylesheet" href="../../css/styles.css?v=20">
+    <link rel="stylesheet" href="../../css/styles-inventario.css?v=20">
 </head>
 <body>
    <div class="dashboard-container">
@@ -121,44 +121,7 @@ try {
                         </tr>
                     </thead>
                     <tbody id="inventarioBody">
-                        <?php
-                        if (count($result) > 0) {
-                            foreach($result as $row) {
-                                $precio_final = $row['precio_base'] * (1 - ($row['descuento'] / 100));
-                                $estado = 'normal';
-                                if ($row['stock_actual'] <= $row['stock_minimo']) {
-                                    $estado = 'bajo';
-                                } elseif ($row['stock_actual'] >= ($row['stock_minimo'] * 2)) {
-                                    $estado = 'alto';
-                                }
-                        ?>
-                        <tr>
-                            <td><?php echo $row['id']; ?></td>
-                            <td><?php echo htmlspecialchars($row['producto_nombre']); ?></td>
-                            <td><?php echo htmlspecialchars($row['categoria']); ?></td>
-                            <td><?php echo $row['stock_actual']; ?></td>
-                            <td><?php echo $row['stock_minimo']; ?></td>
-                            <td>$<?php echo number_format($row['precio_base'], 2); ?></td>
-                            <td>
-                                <div class="discount-badge"><?php echo $row['descuento']; ?>%</div>
-                            </td>
-                            <td>$<?php echo number_format($precio_final, 2); ?></td>
-                            <td><span class="status <?php echo $estado; ?>"><?php echo ucfirst($estado); ?></span></td>
-                            <td>
-                                <button class="action-button edit" onclick="editarProducto(<?php echo $row['id']; ?>)">Editar</button>
-                                <button class="action-button delete" onclick="eliminarProducto(<?php echo $row['id']; ?>)">Eliminar</button>
-                            </td>
-                        </tr>
-                        <?php
-                            }
-                        } else {
-                        ?>
-                        <tr>
-                            <td colspan="10" class="no-data">No hay productos en el inventario</td>
-                        </tr>
-                        <?php
-                        }
-                        ?>
+                        <!-- Las filas serán generadas dinámicamente por JavaScript -->
                     </tbody>
                 </table>
             </div>
@@ -220,6 +183,298 @@ try {
             </div>
         </main>
     </div>
-    <script src="../../js/inventario.js"></script>
+    <script>
+// Variable global para almacenar los datos originales del inventario  
+let inventarioData = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    cargarInventario();
+    cargarProductos();
+    // Configurar el formulario
+    const form = document.getElementById('inventoryForm');
+    if (form) {
+        form.onsubmit = guardarInventario;
+    }
+    // Botón cancelar cierra el modal
+    const cancelBtn = document.querySelector('#inventoryForm .cancel-button');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            cerrarModal();
+        });
+    }
+    // Cerrar modal cuando se hace clic en el botón de cerrar
+    const closeBtn = document.querySelector('.close-button');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            cerrarModal();
+        });
+    }
+    // Cerrar modal cuando se hace clic fuera del contenido
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('inventoryModal');
+        if (event.target === modal) {
+            cerrarModal();
+        }
+    });
+    // Actualizar precio final cuando cambian los valores
+    document.getElementById('precioBase').addEventListener('input', actualizarPrecioFinal);
+    document.getElementById('descuento').addEventListener('input', actualizarPrecioFinal);
+    // Configurar filtros - IGUAL QUE EN PROVEEDORES
+    document.getElementById('searchInput').addEventListener('input', filtrarInventario);
+    document.getElementById('filterCategory').addEventListener('change', filtrarInventario);
+    document.getElementById('filterStock').addEventListener('change', filtrarInventario);
+    document.getElementById('filterDiscount').addEventListener('change', filtrarInventario);
+});
+
+// Cargar inventario al iniciar
+function cargarInventario() {
+    fetch('../../php/empleados/listar_inventario.php')
+        .then(res => res.json())
+        .then(data => {
+            if (!Array.isArray(data)) {
+                console.error('El inventario recibido no es un array:', data);
+                inventarioData = [];
+            } else {
+                inventarioData = data;
+            }
+            renderInventarioTable(inventarioData);
+        })
+        .catch(error => {
+            console.error('Error al cargar inventario:', error);
+            const tbody = document.getElementById('inventarioBody');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="10" class="no-data">Error al cargar el inventario</td></tr>';
+        });
+}
+
+// Función para renderizar la tabla de inventario
+function renderInventarioTable(data) {
+    const tbody = document.getElementById('inventarioBody');
+    if (!tbody) {
+        console.error('No se encontró el tbody con id="inventarioBody"');
+        return;
+    }
+    tbody.innerHTML = '';
+    if (!data || data.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="10" class="no-data">No hay productos en el inventario</td>';
+        tbody.appendChild(row);
+        return;
+    }
+    data.forEach(item => {
+        const precioFinal = (item.precio_base * (1 - item.descuento / 100)).toFixed(2);
+        let estado = '';
+        let estadoClass = '';
+        if (item.stock_actual <= item.stock_minimo) {
+            estado = 'Bajo';
+            estadoClass = 'bajo';
+        } else if (item.stock_actual >= (item.stock_minimo * 2)) {
+            estado = 'Alto';
+            estadoClass = 'alto';
+        } else {
+            estado = 'Normal';
+            estadoClass = 'normal';
+        }
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.id}</td>
+            <td>${item.producto_nombre}</td>
+            <td>${item.categoria}</td>
+            <td>${item.stock_actual}</td>
+            <td>${item.stock_minimo}</td>
+            <td>$${parseFloat(item.precio_base).toFixed(2)}</td>
+            <td><div class="discount-badge">${item.descuento}%</div></td>
+            <td>$${precioFinal}</td>
+            <td><span class="status ${estadoClass}">${estado}</span></td>
+            <td>
+                <button class="action-button edit" onclick="editarProducto(${item.id})">Editar</button>
+                <button class="action-button delete" onclick="eliminarProducto(${item.id})">Eliminar</button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Cargar productos en el select
+function cargarProductos() {
+    fetch('../../php/empleados/listar_productos.php')
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById('producto');
+            select.innerHTML = '<option value="">Seleccionar producto...</option>';
+            data.forEach(item => {
+                select.innerHTML += `<option value="${item.id}">${item.nombre}</option>`;
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar productos:', error);
+        });
+}
+
+// Función para mostrar el modal
+function mostrarFormulario() {
+    document.getElementById('modalTitle').textContent = 'Agregar Producto al Inventario';
+    document.getElementById('inventoryForm').reset();
+    document.getElementById('inventario_id').value = '';
+    document.getElementById('inventoryModal').style.display = 'block';
+}
+
+// Función para cerrar el modal con animación
+function cerrarModal() {
+    const modal = document.getElementById('inventoryModal');
+    if (modal) {
+        modal.classList.add('fade-out');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.classList.remove('fade-out');
+        }, 300); // Duración de la animación
+    }
+}
+
+// Función para mostrar mensajes
+function mostrarMensaje(mensaje, tipo = 'success') {
+    let msgDiv = document.getElementById('msgInventario');
+    if (!msgDiv) {
+        msgDiv = document.createElement('div');
+        msgDiv.id = 'msgInventario';
+        msgDiv.style.position = 'fixed';
+        msgDiv.style.top = '20px';
+        msgDiv.style.right = '20px';
+        msgDiv.style.zIndex = '9999';
+        msgDiv.style.padding = '15px 25px';
+        msgDiv.style.borderRadius = '8px';
+        msgDiv.style.fontWeight = 'bold';
+        msgDiv.style.transition = 'opacity 0.3s';
+        document.body.appendChild(msgDiv);
+    }
+    msgDiv.textContent = mensaje;
+    msgDiv.style.background = tipo === 'success' ? '#4caf50' : '#f44336';
+    msgDiv.style.color = '#fff';
+    msgDiv.style.opacity = '1';
+    msgDiv.style.display = 'block';
+    setTimeout(() => {
+        msgDiv.style.opacity = '0';
+        setTimeout(() => { msgDiv.style.display = 'none'; }, 300);
+    }, 2000);
+}
+
+// Función para editar un producto
+function editarProducto(id) {
+    document.getElementById('modalTitle').textContent = "Editar Producto en Inventario";
+    fetch(`../../php/obtener_inventario.php?id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            const inventario = data.inventario || data; // Soporta ambos formatos
+            document.getElementById('inventoryModal').style.display = 'block';
+            document.getElementById('inventario_id').value = inventario.id || '';
+            const productoSelect = document.getElementById('producto');
+            productoSelect.value = inventario.producto_id || '';
+            document.getElementById('stockActual').value = inventario.stock_actual || '';
+            document.getElementById('stockMinimo').value = inventario.stock_minimo || '';
+            document.getElementById('precioBase').value = inventario.precio_base || '';
+            document.getElementById('descuento').value = inventario.descuento || '';
+            document.getElementById('notas').value = inventario.notas || '';
+            actualizarPrecioFinal();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarMensaje('Error al cargar los datos del inventario', 'error');
+        });
+}
+
+// Función para eliminar un producto
+function eliminarProducto(id) {
+    if (confirm('¿Está seguro de que desea eliminar este producto del inventario?')) {
+        fetch(`../../php/eliminar_inventario.php?id=${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                mostrarMensaje('Producto eliminado del inventario correctamente', 'success');
+                setTimeout(() => { location.reload(); }, 1000);
+            } else {
+                mostrarMensaje(data.error || 'Error al eliminar el producto', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarMensaje('Error al eliminar el producto', 'error');
+        });
+    }
+}
+
+// Función para actualizar el precio final cuando cambia el descuento
+function actualizarPrecioFinal() {
+    const precioBase = parseFloat(document.getElementById('precioBase').value) || 0;
+    const descuento = parseFloat(document.getElementById('descuento').value) || 0;
+    const precioFinal = precioBase * (1 - (descuento / 100));
+    document.getElementById('precioFinal').textContent = precioFinal.toFixed(2);
+}
+
+// Función para guardar inventario
+function guardarInventario(event) {
+    if (event) event.preventDefault();
+    const form = document.getElementById('inventoryForm');
+    if (!form) return false;
+    const formData = new FormData(form);
+    fetch('../../php/guardar_inventario.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(text => {
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            alert('Respuesta inválida del servidor:\n' + text);
+            data = { success: false, error: 'Respuesta inválida del servidor' };
+        }
+        if (data.success) {
+            mostrarMensaje(data.message || 'Inventario guardado correctamente', 'success');
+            cerrarModal();
+            setTimeout(() => { location.reload(); }, 1000);
+        } else {
+            mostrarMensaje(data.error || 'Error al guardar el inventario', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        mostrarMensaje('Error al guardar el inventario', 'error');
+    });
+    return false;
+}
+
+// Función para filtrar el inventario - BASADA EN EL CÓDIGO DE PROVEEDORES
+function filtrarInventario() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const categoryFilter = document.getElementById('filterCategory').value;
+    const stockFilter = document.getElementById('filterStock').value;
+    const discountFilter = document.getElementById('filterDiscount').value;
+    // Filtrar los datos originales
+    const filteredData = inventarioData.filter(item => {
+        const nombre = (item.producto_nombre || '').toLowerCase();
+        const categoria = (item.categoria || '').toLowerCase();
+        // Determinar estado del stock
+        let estado = 'normal';
+        if (item.stock_actual <= item.stock_minimo) {
+            estado = 'bajo';
+        } else if (item.stock_actual >= (item.stock_minimo * 2)) {
+            estado = 'alto';
+        }
+        const descuento = parseFloat(item.descuento) || 0;
+        const matchesSearch = nombre.includes(searchTerm);
+        const matchesCategory = !categoryFilter || categoria === categoryFilter.toLowerCase();
+        const matchesStock = !stockFilter || estado === stockFilter.toLowerCase();
+        const matchesDiscount = !discountFilter || 
+            (discountFilter === 'con-descuento' && descuento > 0) ||
+            (discountFilter === 'sin-descuento' && descuento === 0);
+        return matchesSearch && matchesCategory && matchesStock && matchesDiscount;
+    });
+    // Re-renderizar la tabla con los datos filtrados
+    renderInventarioTable(filteredData);
+}
+    </script>
 </body>
 </html>

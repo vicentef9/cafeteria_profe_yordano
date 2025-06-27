@@ -1,0 +1,384 @@
+/* =========================================
+   Variables y estilos base
+   ========================================= */
+:root {
+    --primary-color: #5C3317;
+    --secondary-color: #D2691E;
+    --background-color: #FFF8DC;
+    --text-color: #333;
+    --link-color: #663399;
+    --error-color: #dc3545;
+    --success-color: #28a745;
+    --sidebar-width: 250px;
+    --active-sidebar-link-bg: rgba(92, 51, 23, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f7f8fa;
+    color: #222;
+}
+
+/* Sidebar y layout */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+.sidebar {
+    background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+    color: #fff;
+    width: 220px;
+    min-height: 100vh;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    padding: 20px;
+}
+.logo {
+    padding: 32px 0 16px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3em;
+    letter-spacing: 1px;
+}
+.nav-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.nav-menu li {
+    margin: 18px 0;
+}
+.nav-menu a {
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 32px;
+    display: block;
+    border-radius: 25px 0 0 25px;
+    transition: background 0.2s;
+}
+.nav-menu a.active, .nav-menu a:hover {
+    background: rgba(255,255,255,0.18);
+    font-weight: bold;
+}
+
+.main-content {
+    flex: 1;
+    padding: 32px 40px 32px 40px;
+    margin-left: 220px;
+    width: 100%;
+    min-height: 100vh;
+    background: #f7f8fa;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+.dashboard-header h1 {
+    font-size: 2.1em;
+    color: #3a7bd5;
+}
+.add-button {
+    background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 28px;
+    font-size: 1em;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(58,123,213,0.08);
+    transition: background 0.2s, transform 0.1s;
+}
+.add-button:hover {
+    background: #3a7bd5;
+    transform: scale(1.04);
+}
+
+/* Filtros y barra de búsqueda como inventario */
+.search-filters {
+    background: #f8fafc;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(58,123,213,0.04);
+    padding: 18px 24px 8px 24px;
+    margin-bottom: 28px;
+    border: 1px solid #e0e6ed;
+}
+.search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.search-bar input, .search-bar select {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+}
+.search-button {
+    background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0 18px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.search-button:hover {
+    background: #3a7bd5;
+}
+.filters-container {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.filter-group label {
+    font-weight: 500;
+    color: #3a7bd5;
+    margin-bottom: 4px;
+    display: block;
+}
+.filter-group select {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+}
+
+/* Tabla de proveedores igual a inventario */
+.suppliers-table-container {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 1px 10px rgba(58,123,213,0.06);
+    padding: 24px 24px 12px 24px;
+    margin-bottom: 32px;
+    border: 1px solid #e0e6ed;
+}
+.suppliers-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+}
+.suppliers-table th, .suppliers-table td {
+    padding: 14px 10px;
+    text-align: left;
+}
+.suppliers-table th {
+    background: #3a7bd5;
+    color: #fff;
+    font-weight: 600;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+.suppliers-table tr {
+    background: #f8fafc;
+    transition: background 0.2s;
+}
+.suppliers-table tr:hover {
+    background: #e3e8ef;
+}
+.suppliers-table td {
+    border-bottom: 1px solid #e0e6ed;
+    font-size: 1em;
+}
+
+/* Botones de acción igual a inventario */
+.action-button {
+    border: none;
+    border-radius: 7px;
+    padding: 7px 14px;
+    margin: 2px 0;
+    font-size: 0.98em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.action-button.edit {
+    background: #ffc107;
+    color: #222;
+}
+.action-button.edit:hover {
+    background: #ffb300;
+}
+.action-button.delete {
+    background: #dc3545;
+    color: #fff;
+}
+.action-button.delete:hover {
+    background: #b71c1c;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    align-items: center;
+    justify-content: center;
+}
+.modal-content {
+    background-color: #fff;
+    margin: 40px auto;
+    border-radius: 10px;
+    padding: 24px 24px 16px 24px;
+    border: 1px solid #888;
+    max-width: 900px;
+    min-width: 320px;
+    width: 98vw;
+    max-height: 92vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #3a7bd5 #f1f3f6;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    position: relative;
+    padding-bottom: 80px;
+}
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+.modal-content::-webkit-scrollbar-thumb {
+    background: #3a7bd5;
+    border-radius: 6px;
+}
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f3f6;
+    border-radius: 6px;
+}
+
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+}
+.form-grid-2col .form-group {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.form-grid-2col .form-group label {
+    margin-bottom: 0.2rem;
+}
+@media (max-width: 700px) {
+    .form-grid-2col {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #3a7bd5;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f1f3f6;
+    font-size: 1rem;
+    margin-bottom: 8px;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3a7bd5;
+}
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    background: #fff;
+    padding: 16px 0 0 0;
+    z-index: 10;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+}
+.submit-button,
+.cancel-button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+.submit-button {
+    background-color: #3a7bd5;
+    color: white;
+}
+.submit-button:hover {
+    background-color: #2563a6;
+}
+.cancel-button {
+    background-color: #b0b0b0;
+    color: #fff;
+}
+.cancel-button:hover {
+    background-color: #888;
+}
+.status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.status.activo {
+    background-color: var(--success-color);
+    color: white;
+}
+.status.inactivo {
+    background-color: var(--error-color);
+    color: white;
+}
+
+/* Ajuste para el textarea de dirección en el formulario de proveedores */
+#supplierForm #direccion {
+    resize: none !important;
+    min-height: 80px;
+    max-height: 80px;
+}
+
+/* Responsive para filtros y tabla */
+@media (max-width: 900px) {
+    .filters-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+    .suppliers-table-container {
+        padding: 14px 6vw;
+    }
+}

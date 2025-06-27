@@ -18,7 +18,7 @@ if ($rol !== 'empleado' && $rol !== 'admin') {
 }
 
 // Obtener datos de proveedores
-$query = "SELECT * FROM proveedores ORDER BY id";
+$query = "SELECT * FROM proveedores ORDER BY id ASC";
 $stmt = $conn->prepare($query);
 $stmt->execute();
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -29,7 +29,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Proveedores - Sistema de Cafetería</title>
-    <link rel="stylesheet" href="../../css/styles.css?v=10">
+    <link rel="stylesheet" href="../../css/styles-proveedores.css?v=1">
 </head>
 <body>
     <div class="dashboard-container">
@@ -160,7 +160,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="modal-content">
                     <span class="close-button" onclick="cerrarModal()">&times;</span>
                     <h2 id="modalTitle">Agregar Proveedor</h2>
-                    <form id="supplierForm" action="../../php/guardar_proveedor.php" method="POST">
+                    <form id="supplierForm" class="form-grid-2col" action="../../php/guardar_proveedor.php" method="POST">
                         <input type="hidden" id="proveedor_id" name="proveedor_id">
                         <div class="form-group">
                             <label for="nombre">Nombre de la Empresa</label>

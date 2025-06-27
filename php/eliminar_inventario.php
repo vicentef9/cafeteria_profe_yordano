@@ -8,28 +8,22 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
-// Verificar si es una petición POST y si se proporcionó un ID
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
-    $id = $_POST['id'];
+// Verificar si es una petición DELETE y si se proporcionó un ID
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && isset($_GET['id'])) {
+    $id = $_GET['id'];
 
     try {
-        $query = "UPDATE inventario SET estado = 'inactivo' WHERE id = :id";
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            $_SESSION['mensaje'] = "Producto deshabilitado del inventario exitosamente";
-            $_SESSION['tipo_mensaje'] = "success";
+        $stmt = $conn->prepare('DELETE FROM inventario WHERE id = ?');
+        $stmt->execute([$id]);
+        if ($stmt->rowCount() > 0) {
+            echo json_encode(['success' => true]);
         } else {
-            throw new Exception("Error al deshabilitar el producto del inventario");
+            echo json_encode(['success' => false, 'error' => 'No se encontró el producto']);
         }
-    } catch (Exception $e) {
-        $_SESSION['mensaje'] = "Error: " . $e->getMessage();
-        $_SESSION['tipo_mensaje'] = "error";
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'error' => 'Error en la base de datos: ' . $e->getMessage()]);
     }
+} else {
+    echo json_encode(['success' => false, 'error' => 'Método no permitido o ID inválido']);
 }
-
-// Redirigir de vuelta a la página de inventario
-header('Location: ../html/empleados/inventario.html');
-exit();
 ?>
