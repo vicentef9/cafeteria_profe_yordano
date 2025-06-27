@@ -1,5 +1,5 @@
 /* =========================
-   Estilos de Proveedores - Cafetería
+   Estilos de Usuarios - Cafetería
    ========================= */
 
 /* Fondo y contenedores principales */
@@ -7,30 +7,30 @@ body, .main-content {
     background: #f1f3f6 !important;
 }
 
-/* Contenedores principales */
-.suppliers-table-container {
+.employees-table-container {
     background: #f8fafc;
     border-radius: 14px;
     box-shadow: 0 1px 10px rgba(58,123,213,0.06);
     padding: 24px 24px 12px 24px;
     margin-bottom: 32px;
     border: 1px solid #e0e6ed;
+    overflow-x: auto;
 }
 
-/* Tablas de proveedores */
-.suppliers-table {
+/* Tablas de usuarios */
+.employees-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     background: transparent;
 }
 
-.suppliers-table th, .suppliers-table td {
+.employees-table th, .employees-table td {
     padding: 14px 10px;
     text-align: left;
 }
 
-.suppliers-table th {
+.employees-table th {
     background: #3a7bd5;
     color: #fff;
     font-weight: 600;
@@ -38,16 +38,16 @@ body, .main-content {
     border-top-right-radius: 6px;
 }
 
-.suppliers-table tr {
+.employees-table tr {
     background: #f8fafc;
     transition: background 0.2s;
 }
 
-.suppliers-table tr:hover {
+.employees-table tr:hover {
     background: #e3e8ef;
 }
 
-.suppliers-table td {
+.employees-table td {
     border-bottom: 1px solid #e0e6ed;
     font-size: 1em;
 }
@@ -190,14 +190,10 @@ body, .main-content {
     color: #fff;
 }
 
-/* Calificación estrellas */
-.rating .star {
-    color: #e0e0e0;
-    font-size: 1.1em;
-}
-
-.rating .star.filled {
-    color: #ffc107;
+/* Estilos especiales */
+.usuario-inactivo {
+    background-color: #f2f2f2 !important;
+    color: #888;
 }
 
 .close-button {
@@ -252,12 +248,6 @@ body, .main-content {
     background: #f1f3f6;
 }
 
-/* FORZADO PARA TEST VISUAL MODAL PROVEEDORES */
-#supplierModal .modal-content {
-    border: 6px dashed #e53935 !important;
-    background: #fff176 !important;
-}
-
 /* Responsive */
 @media (max-width: 900px) {
     .filters-container {
@@ -269,7 +259,7 @@ body, .main-content {
         padding: 18px 6vw 18px 6vw;
     }
     
-    .suppliers-table-container {
+    .employees-table-container {
         padding: 14px 6vw;
     }
     

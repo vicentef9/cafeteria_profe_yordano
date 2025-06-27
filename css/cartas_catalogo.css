@@ -3,6 +3,54 @@ body, .main-content {
     background: #f1f3f6 !important;
 }
 
+/* Búsqueda y filtros para catálogo */
+.catalog-search-filters {
+    background: #f8fafc;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(58,123,213,0.04);
+    padding: 18px 24px 8px 24px;
+    margin-bottom: 28px;
+    border: 1px solid #e0e6ed;
+}
+
+.catalog-search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.catalog-search-bar input {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+    flex: 1;
+}
+
+.catalog-filters {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.catalog-filter-group label {
+    font-weight: 500;
+    color: #3a7bd5;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.catalog-filter-group select {
+    background: #f1f3f6;
+    border: 1px solid #dbe3ea;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 1em;
+    min-width: 120px;
+}
+
+/* Tarjetas de productos */
 .card-container {
     display: flex;
     flex-wrap: wrap;
@@ -136,5 +184,23 @@ body, .main-content {
         width: 95vw;
         min-width: 0;
         max-width: 340px;
+    }
+    
+    .catalog-search-filters {
+        padding: 12px 16px;
+    }
+    
+    .catalog-search-bar {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .catalog-filters {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .catalog-filter-group select {
+        width: 100%;
     }
 }
