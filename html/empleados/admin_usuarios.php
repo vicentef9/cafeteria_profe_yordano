@@ -26,7 +26,7 @@ if ($rol !== 'administrador') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios - Sistema de Cafetería</title>
     <link rel="stylesheet" href="../../css/styles.css">
-    <link rel="stylesheet" href="../../css/styles-usuarios.css">
+    <link rel="stylesheet" href="../../css/styles-usuarios.css?v=3.0">
 </head>
 <body>
     <div class="dashboard-container">
@@ -48,10 +48,10 @@ if ($rol !== 'administrador') {
             </nav>
         </div>
         <main class="main-content">
-            <header class="dashboard-header">
+            <div class="users-header">
                 <h1>Gestión de Usuarios</h1>
-                <button class="add-button" onclick="mostrarFormulario()">Agregar Usuario</button>
-            </header>
+                <button class="add-user-btn" onclick="mostrarFormulario()">Agregar Usuario</button>
+            </div>
             
             <div class="search-filters">
                 <div class="search-bar">
@@ -82,29 +82,33 @@ if ($rol !== 'administrador') {
                 </div>
             </div>
 
-            <table class="suppliers-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Email</th>
-                        <th>Rol</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="empleadosTableBody">
-                    <!-- Los datos se cargarán dinámicamente -->
-                </tbody>
-            </table>
+            <div class="users-table-container">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="empleadosTableBody">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
 
             <!-- Modal para agregar/editar usuario -->
             <div id="userModal" class="modal">
                 <div class="modal-content">
-                    <span class="close-button" onclick="cerrarModal()">&times;</span>
-                    <h2 id="modalTitle">Agregar Usuario</h2>
-                    <form id="userForm">
+                    <div class="modal-header">
+                        <h2 id="modalTitle">Agregar Usuario</h2>
+                        <span class="close-button" onclick="cerrarModal()">&times;</span>
+                    </div>
+                    <form id="userForm" class="form-grid-2col">
                         <input type="hidden" id="usuario_id" name="id">
                         <div class="form-group">
                             <label for="nombre">Nombre</label>
@@ -137,14 +141,14 @@ if ($rol !== 'administrador') {
                             </select>
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Guardar</button>
-                            <button type="button" class="btn btn-danger" onclick="cerrarModal()">Cancelar</button>
+                            <button type="submit" class="submit-button">Guardar Usuario</button>
+                            <button type="button" class="cancel-button" onclick="cerrarModal()">Cancelar</button>
                         </div>
                     </form>
                 </div>
             </div>
         </main>
     </div>
-    <script src="../../js/admin_usuarios.js"></script>pt>
+    <script src="../../js/admin_usuarios.js?v=2.0"></script>
 </body>
 </html>

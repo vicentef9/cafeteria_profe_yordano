@@ -30,7 +30,7 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Ventas - Sistema de Cafetería</title>
     <link rel="stylesheet" href="../../css/styles.css">
-    <link rel="stylesheet" href="../../css/styles-ventas.css">
+    <link rel="stylesheet" href="../../css/styles-ventas.css?v=2.0">
 </head>
 <body>
    <div class="dashboard-container">
@@ -52,10 +52,10 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
             </nav>
         </div>
         <main class="main-content">
-            <section class="dashboard-header">
+            <div class="sales-header">
                 <h1>Gestión de Ventas</h1>
-                <button class="add-button" onclick="mostrarFormulario()">Nueva Venta</button>
-            </section>
+                <button class="add-sale-btn" onclick="mostrarFormulario()">Nueva Venta</button>
+            </div>
 
             <section class="sales-summary">
                 <div class="summary-card">
@@ -152,9 +152,11 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
             <!-- Modal para nueva venta -->
             <div id="saleModal" class="modal">
                 <div class="modal-content">
-                    <span class="close-button" onclick="cerrarModal()">&times;</span>
-                    <h2>Nueva Venta</h2>
-                    <form id="saleForm" onsubmit="procesarVenta(event)">
+                    <div class="modal-header">
+                        <h2>Nueva Venta</h2>
+                        <span class="close-button" onclick="cerrarModal()">&times;</span>
+                    </div>
+                    <form id="saleForm" class="sales-form" onsubmit="procesarVenta(event)">
                         <div class="form-group">
                             <label for="producto">Producto</label>
                             <select id="producto" name="producto" required onchange="actualizarPrecio()">
@@ -281,12 +283,41 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
             const producto = document.getElementById('producto');
             const cantidad = document.getElementById('cantidad');
             
-            if (producto.value && cantidad.value) {
-                const nombre = producto.options[producto.selectedIndex].text.split(' - ')[0];
-                const precio = parseFloat(producto.options[producto.selectedIndex].dataset.precio);
-                const cantidadIngresada = parseInt(cantidad.value);
-                const id = producto.value;
-                
+            if (!producto.value) {
+                alert('Por favor seleccione un producto');
+                return;
+            }
+            
+            if (!cantidad.value || cantidad.value <= 0) {
+                alert('Por favor ingrese una cantidad válida');
+                return;
+            }
+            
+            const nombre = producto.options[producto.selectedIndex].text.split(' - ')[0];
+            const precio = parseFloat(producto.options[producto.selectedIndex].dataset.precio);
+            const cantidadIngresada = parseInt(cantidad.value);
+            const stock = parseInt(producto.options[producto.selectedIndex].dataset.stock);
+            const id = producto.value;
+            
+            // Verificar si hay suficiente stock
+            if (cantidadIngresada > stock) {
+                alert(`Stock insuficiente. Solo hay ${stock} unidades disponibles.`);
+                return;
+            }
+            
+            // Verificar si el producto ya está en el carrito
+            const productoExistente = carrito.find(item => item.id === id);
+            if (productoExistente) {
+                // Si ya existe, sumar la cantidad
+                const nuevaCantidad = productoExistente.cantidad + cantidadIngresada;
+                if (nuevaCantidad > stock) {
+                    alert(`No se puede agregar. Total excedería el stock disponible (${stock} unidades).`);
+                    return;
+                }
+                productoExistente.cantidad = nuevaCantidad;
+                productoExistente.subtotal = productoExistente.precio * nuevaCantidad;
+            } else {
+                // Si no existe, agregarlo al carrito
                 carrito.push({
                     id,
                     nombre,
@@ -294,11 +325,15 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
                     precio,
                     subtotal: precio * cantidadIngresada
                 });
-                
-                actualizarCarrito();
-                producto.value = '';
-                cantidad.value = 1;
             }
+            
+            actualizarCarrito();
+            
+            // Limpiar el formulario
+            producto.value = '';
+            cantidad.value = 1;
+            
+            alert('Producto agregado al carrito correctamente');
         }
 
         function actualizarCarrito() {
@@ -306,17 +341,26 @@ $productos = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
             cartItems.innerHTML = '';
             let total = 0;
 
-            carrito.forEach((item, index) => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'cart-item';
-                itemElement.innerHTML = `
-                    <span>${item.nombre} x${item.cantidad}</span>
-                    <span>CLP ${item.subtotal.toFixed(0)}</span>
-                    <button onclick="eliminarDelCarrito(${index})">Eliminar</button>
-                `;
-                cartItems.appendChild(itemElement);
-                total += item.subtotal;
-            });
+            if (carrito.length === 0) {
+                cartItems.innerHTML = '<p class="empty-cart">El carrito está vacío</p>';
+            } else {
+                carrito.forEach((item, index) => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'cart-item';
+                    itemElement.innerHTML = `
+                        <div class="item-info">
+                            <span class="item-name">${item.nombre}</span>
+                            <span class="item-details">x${item.cantidad} - CLP ${item.precio.toFixed(0)} c/u</span>
+                        </div>
+                        <div class="item-actions">
+                            <span class="item-subtotal">CLP ${item.subtotal.toFixed(0)}</span>
+                            <button class="remove-item" onclick="eliminarDelCarrito(${index})" title="Eliminar">×</button>
+                        </div>
+                    `;
+                    cartItems.appendChild(itemElement);
+                    total += item.subtotal;
+                });
+            }
 
             document.getElementById('totalAmount').textContent = `CLP ${total.toFixed(0)}`;
         }

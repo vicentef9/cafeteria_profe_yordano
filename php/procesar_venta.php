@@ -42,14 +42,14 @@ try {
     }
 
     // Insertar venta
-    $stmt = $conn->prepare("INSERT INTO ventas (usuario_id, total, metodo_pago, estado, fecha_venta) VALUES (?, ?, ?, ?, NOW())");
+    $stmt = $conn->prepare("INSERT INTO ventas (empleado_id, total, metodo_pago, estado, fecha_venta) VALUES (?, ?, ?, ?, NOW())");
     $stmt->execute([$_SESSION['usuario_id'], $total, $input['metodo_pago'], $estado]);
     $venta_id = $conn->lastInsertId();
 
     // Insertar detalles de venta y actualizar inventario
     foreach ($input['productos'] as $producto) {
         // Insertar detalle de venta
-        $stmt = $conn->prepare("INSERT INTO detalle_ventas (venta_id, producto_id, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO detalles_venta (venta_id, producto_id, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([
             $venta_id,
             $producto['id'],

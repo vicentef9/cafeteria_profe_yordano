@@ -38,8 +38,8 @@ try {
         $stmt->bindParam(':id', $id);
     } else {
         // Nunca usar producto_id en el INSERT, aunque llegue por POST
-        $query = "INSERT INTO productos (nombre, categoria, descripcion, fecha_vencimiento)
-                  VALUES (:nombre, :categoria, :descripcion, :fecha_vencimiento)";
+        $query = "INSERT INTO productos (nombre, categoria, descripcion, fecha_vencimiento, activo)
+                  VALUES (:nombre, :categoria, :descripcion, :fecha_vencimiento, 1)";
         
         $stmt = $conn->prepare($query);
     }

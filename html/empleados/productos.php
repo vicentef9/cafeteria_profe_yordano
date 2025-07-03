@@ -30,8 +30,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Productos - Sistema de Cafetería</title>
     <link rel="stylesheet" href="../../css/styles.css">
-    <link rel="stylesheet" href="../../css/styles-productos.css">
-    <link rel="stylesheet" href="../../css/cartas_catalogo.css">
+    <link rel="stylesheet" href="../../css/styles-productos.css?v=2.0">
    
 </head>
 <body>
@@ -55,10 +54,10 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
         
         <main class="main-content">
-            <header class="dashboard-header">
+            <div class="products-header">
                 <h1>Gestión de Productos</h1>
-                <button class="add-button" onclick="mostrarFormulario()">Agregar Producto</button>
-            </header>
+                <button class="add-product-btn" onclick="mostrarFormulario()">Agregar Producto</button>
+            </div>
             
             <div class="search-filters">
                 <div class="search-bar">
@@ -76,7 +75,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <option value="cafe">Café</option>
                             <option value="postres">Postres</option>
                             <option value="bebidas">Bebidas</option>
-                            <option value="insumos">Insumos</option>
+                            <option value="alimentos">Alimentos</option>
                         </select>
                     </div>
                 </div>
@@ -127,9 +126,11 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <!-- Modal para agregar/editar producto -->
             <div id="productModal" class="modal">
                 <div class="modal-content">
-                    <span class="close-button" onclick="cerrarModal()">&times;</span>
-                    <h2 id="modalTitle">Editar Producto</h2>
-                    <form id="productForm" action="../../php/guardar_producto.php" method="POST" onsubmit="return guardarProducto(event)">
+                    <div class="modal-header">
+                        <h2 id="modalTitle">Editar Producto</h2>
+                        <span class="close-button" onclick="cerrarModal()">&times;</span>
+                    </div>
+                    <form id="productForm" class="form-grid-2col" action="../../php/guardar_producto.php" method="POST" onsubmit="return guardarProducto(event)">
                         <input type="hidden" id="producto_id" name="producto_id">
                         <div class="form-group">
                             <label for="nombre">Nombre del Producto</label>
@@ -154,7 +155,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <input type="date" id="fecha_vencimiento" name="fecha_vencimiento">
                         </div>
                         <div class="form-actions">
-                            <button type="submit" class="submit-button">Guardar</button>
+                            <button type="submit" class="submit-button">Guardar Producto</button>
                             <button type="button" class="cancel-button" onclick="cerrarModal()">Cancelar</button>
                         </div>
                     </form>

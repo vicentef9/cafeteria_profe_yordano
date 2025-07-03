@@ -2,54 +2,101 @@
    Estilos de Usuarios - Cafetería
    ========================= */
 
+/* Header de usuarios */
+.users-header {
+    position: relative;
+    margin-bottom: 32px;
+}
+
+.users-header h1 {
+    color: #3a7bd5;
+    margin-bottom: 24px;
+    font-size: 2.2em;
+    font-weight: 600;
+}
+
+/* Botón de agregar usuario */
+.add-user-btn {
+    background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    box-shadow: 0 2px 8px rgba(58,123,213,0.2);
+    font-weight: 500;
+}
+
+.add-user-btn:hover {
+    background: #3a7bd5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(58,123,213,0.3);
+}
+
 /* Fondo y contenedores principales */
 body, .main-content {
     background: #f1f3f6 !important;
 }
 
-.employees-table-container {
-    background: #f8fafc;
-    border-radius: 14px;
-    box-shadow: 0 1px 10px rgba(58,123,213,0.06);
-    padding: 24px 24px 12px 24px;
+/* Contenedores principales */
+.users-table-container {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(58,123,213,0.06);
+    padding: 0;
     margin-bottom: 32px;
     border: 1px solid #e0e6ed;
-    overflow-x: auto;
+    overflow: hidden;
 }
 
 /* Tablas de usuarios */
-.employees-table {
+.users-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: transparent;
+    border-collapse: collapse;
+    margin: 0;
 }
 
-.employees-table th, .employees-table td {
-    padding: 14px 10px;
-    text-align: left;
-}
-
-.employees-table th {
+.users-table th {
     background: #3a7bd5;
-    color: #fff;
+    color: #ffffff;
     font-weight: 600;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    padding: 16px 12px;
+    text-align: left;
+    font-size: 0.95em;
+    border: none;
 }
 
-.employees-table tr {
+.users-table th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.users-table th:last-child {
+    border-top-right-radius: 12px;
+}
+
+.users-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f0f2f5;
+    font-size: 0.95em;
+    vertical-align: middle;
+}
+
+.users-table tr {
+    background: #ffffff;
+    transition: background-color 0.2s;
+}
+
+.users-table tr:hover {
     background: #f8fafc;
-    transition: background 0.2s;
 }
 
-.employees-table tr:hover {
-    background: #e3e8ef;
-}
-
-.employees-table td {
-    border-bottom: 1px solid #e0e6ed;
-    font-size: 1em;
+.users-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 /* Barra de búsqueda y filtros */
@@ -57,7 +104,7 @@ body, .main-content {
     background: #f8fafc;
     border-radius: 12px;
     box-shadow: 0 1px 6px rgba(58,123,213,0.04);
-    padding: 18px 24px 8px 24px;
+    padding: 20px 24px;
     margin-bottom: 28px;
     border: 1px solid #e0e6ed;
 }
@@ -65,23 +112,23 @@ body, .main-content {
 .search-bar {
     display: flex;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    align-items: center;
 }
 
-.search-bar input, .search-bar select {
-    background: #f1f3f6;
+.search-bar input[type="text"] {
+    background: #ffffff;
     border: 1px solid #dbe3ea;
-    border-radius: 6px;
-    padding: 7px 12px;
+    border-radius: 8px;
+    padding: 10px 16px;
     font-size: 1em;
-}
-
-.search-bar input {
     flex: 1;
+    transition: border-color 0.2s;
 }
 
-.search-bar select {
-    min-width: 150px;
+.search-bar input[type="text"]:focus {
+    outline: none;
+    border-color: #3a7bd5;
 }
 
 .search-button {
@@ -89,17 +136,20 @@ body, .main-content {
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 0 18px;
+    padding: 10px 18px;
     font-size: 1em;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     gap: 6px;
+    font-weight: 500;
 }
 
 .search-button:hover {
     background: #3a7bd5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(58,123,213,0.3);
 }
 
 .filters-container {
@@ -110,65 +160,57 @@ body, .main-content {
 }
 
 .filter-group label {
-    font-weight: 500;
-    color: #3a7bd5;
-    margin-bottom: 4px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 6px;
     display: block;
+    font-size: 0.9em;
 }
 
 .filter-group select {
-    background: #f1f3f6;
+    background: #ffffff;
     border: 1px solid #dbe3ea;
-    border-radius: 6px;
-    padding: 7px 12px;
-    font-size: 1em;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.95em;
+    transition: border-color 0.2s;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #3a7bd5;
 }
 
 /* Botones de acción */
-.action-button, .submit-button, .cancel-button, .btn {
+.action-button {
     border: none;
-    border-radius: 7px;
-    padding: 7px 14px;
-    margin: 2px 0;
-    font-size: 0.98em;
+    border-radius: 6px;
+    padding: 6px 12px;
+    margin: 2px;
+    font-size: 0.85em;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    font-weight: 500;
 }
 
-.action-button.edit, .btn.btn-primary {
+.action-button.edit {
     background: #ffc107;
     color: #222;
 }
 
-.action-button.edit:hover, .btn.btn-primary:hover {
+.action-button.edit:hover {
     background: #ffb300;
+    transform: translateY(-1px);
 }
 
-.action-button.delete, .btn.btn-danger {
+.action-button.delete {
     background: #dc3545;
     color: #fff;
 }
 
-.action-button.delete:hover, .btn.btn-danger:hover {
+.action-button.delete:hover {
     background: #b71c1c;
-}
-
-.submit-button {
-    background: #3a7bd5;
-    color: #fff;
-}
-
-.submit-button:hover {
-    background: #2563a6;
-}
-
-.cancel-button {
-    background: #b0b0b0;
-    color: #fff;
-}
-
-.cancel-button:hover {
-    background: #888;
+    transform: translateY(-1px);
 }
 
 /* Estado y badges */
@@ -186,46 +228,127 @@ body, .main-content {
 }
 
 .status.inactive, .status.inactivo {
-    background: #b0b0b0;
+    background: #dc3545;
     color: #fff;
 }
 
-/* Estilos especiales */
-.usuario-inactivo {
-    background-color: #f2f2f2 !important;
-    color: #888;
+/* =============================
+   Estilos del Modal de Usuarios
+   ============================= */
+
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #ffffff !important;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+    border: none !important;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e0e6ed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.3em;
+    font-weight: 600;
 }
 
 .close-button {
-    float: right;
-    font-size: 1.5em;
-    color: #888;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
     cursor: pointer;
-    margin-top: -12px;
+    padding: 0 5px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    margin-top: 0;
+    float: none;
 }
 
 .close-button:hover {
-    color: #dc3545;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
 }
 
 /* Formulario del modal */
+#userForm {
+    padding: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 24px;
+    background-color: #ffffff !important;
+}
+
+.form-grid-2col .form-group {
+    margin-bottom: 16px;
+}
+
+.form-grid-2col .form-group:nth-child(4),
+.form-grid-2col .form-actions {
+    grid-column: span 2;
+}
+
 .form-group label {
-    font-weight: 500;
-    color: #3a7bd5;
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.9em;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-    background: #f1f3f6;
-    border: 1px solid #dbe3ea;
-    border-radius: 6px;
-    padding: 7px 12px;
-    font-size: 1em;
-    margin-bottom: 8px;
     width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e0e6ed;
+    border-radius: 6px;
+    font-size: 0.95em;
+    transition: all 0.2s;
+    background-color: #ffffff;
+    box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -233,19 +356,110 @@ body, .main-content {
 .form-group textarea:focus {
     outline: none;
     border-color: #3a7bd5;
+    box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.1);
 }
 
 .form-actions {
     display: flex;
+    justify-content: flex-end;
     gap: 12px;
-    margin-top: 12px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e6ed;
+    margin-top: 24px;
 }
 
-.no-data {
-    text-align: center;
-    color: #888;
-    font-style: italic;
-    background: #f1f3f6;
+.submit-button,
+.cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.cancel-button {
+    background-color: #f7fafc;
+    color: #4a5568;
+    border: 1px solid #e0e6ed;
+}
+
+.cancel-button:hover {
+    background-color: #edf2f7;
+}
+
+.submit-button {
+    background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+    color: white;
+}
+
+.submit-button:hover {
+    background: #3a7bd5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(58, 123, 213, 0.3);
+}
+
+/* Animaciones del modal */
+.modal.fade-out {
+    animation: modalFadeOut 0.3s ease-in forwards;
+}
+
+@keyframes modalFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* Estilos específicos para el modal de usuarios */
+#userModal {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(5px);
+}
+
+#userModal .modal-content {
+    background-color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+#userModal .modal-header {
+    background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%) !important;
+    color: white !important;
+}
+
+#userModal .form-grid-2col {
+    background-color: #ffffff !important;
+}
+
+/* Responsive para modal */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .form-grid-2col {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .form-grid-2col .form-group:nth-child(4),
+    .form-grid-2col .form-actions {
+        grid-column: span 1;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .submit-button,
+    .cancel-button {
+        width: 100%;
+    }
 }
 
 /* Responsive */
@@ -259,7 +473,7 @@ body, .main-content {
         padding: 18px 6vw 18px 6vw;
     }
     
-    .employees-table-container {
+    .users-table-container {
         padding: 14px 6vw;
     }
     

@@ -21,7 +21,8 @@ if ($rol !== 'empleado' && $rol !== 'admin') {
 try {
     $query = "SELECT i.*, p.nombre as producto_nombre, p.categoria 
               FROM inventario i 
-              JOIN productos p ON i.producto_id = p.id";
+              JOIN productos p ON i.producto_id = p.id
+              ORDER BY p.nombre";
     $stmt = $conn->prepare($query);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -37,7 +38,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Inventario - Sistema de Cafetería</title>
     <link rel="stylesheet" href="../../css/styles.css">
-    <link rel="stylesheet" href="../../css/styles-inventario.css">
+    <link rel="stylesheet" href="../../css/styles-inventario.css?v=2.0">
 </head>
 <body>
    <div class="dashboard-container">
@@ -78,9 +79,10 @@ try {
                         <label for="categoryFilter">Categoría</label>
                         <select id="categoryFilter">
                             <option value="">Todas las categorías</option>
+                            <option value="cafe">Café</option>
+                            <option value="postres">Postres</option>
                             <option value="bebidas">Bebidas</option>
                             <option value="alimentos">Alimentos</option>
-                            <option value="postres">Postres</option>
                         </select>
                     </div>
                     
@@ -130,6 +132,63 @@ try {
             </div>
         </div>
     </div>
+
+    <!-- Modal para agregar/editar inventario -->
+    <div id="inventoryModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Agregar Producto al Inventario</h3>
+                <span class="close" onclick="cerrarModal()">&times;</span>
+            </div>
+            <form id="inventoryForm" onsubmit="guardarInventario(event)">
+                <input type="hidden" id="inventario_id" name="inventario_id">
+                
+                <div class="form-group">
+                    <label for="producto">Producto *</label>
+                    <select id="producto" name="producto_id" required>
+                        <option value="">Seleccionar producto...</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="stockActual">Stock Actual *</label>
+                        <input type="number" id="stockActual" name="stock_actual" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stockMinimo">Stock Mínimo *</label>
+                        <input type="number" id="stockMinimo" name="stock_minimo" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="precioBase">Precio Base *</label>
+                        <input type="number" id="precioBase" name="precio_base" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descuento">Descuento (%)</label>
+                        <input type="number" id="descuento" name="descuento" min="0" max="100" step="0.01" value="0">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Precio Final: $<span id="precioFinal">0.00</span></label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notas">Notas</label>
+                    <textarea id="notas" name="notas" rows="3"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" onclick="cerrarModal()" class="btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn-save">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
 // Variable global para almacenar los datos originales del inventario  
 let inventarioData = [];
@@ -160,6 +219,8 @@ function openInventoryModal() {
     document.getElementById('modalTitle').textContent = 'Agregar Producto al Inventario';
     document.getElementById('inventoryForm').reset();
     document.getElementById('inventario_id').value = '';
+    document.getElementById('precioFinal').textContent = '0.00';
+    cargarProductos(); // Recargar productos cada vez que se abre el modal
     document.getElementById('inventoryModal').style.display = 'block';
 }
 
@@ -230,7 +291,17 @@ function cargarProductos() {
         .then(data => {
             const select = document.getElementById('producto');
             select.innerHTML = '<option value="">Seleccionar producto...</option>';
+            
+            // Obtener IDs de productos que ya están en inventario
+            const productosEnInventario = inventarioData.map(item => parseInt(item.producto_id));
+            
             data.forEach(item => {
+                // Solo mostrar productos que no están en inventario al agregar nuevo
+                const inventarioId = document.getElementById('inventario_id').value;
+                if (!inventarioId && productosEnInventario.includes(item.id)) {
+                    // No agregar productos que ya están en inventario
+                    return;
+                }
                 select.innerHTML += `<option value="${item.id}">${item.nombre}</option>`;
             });
         })
@@ -289,26 +360,125 @@ function actualizarPrecioFinal() {
 // Función para guardar inventario
 function guardarInventario(event) {
     if (event) event.preventDefault();
-    // Aquí iría la lógica para guardar
-    alert('Función de guardar inventario - por implementar');
+    
+    const formData = new FormData(document.getElementById('inventoryForm'));
+    
+    fetch('../../php/guardar_inventario.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Producto guardado en inventario correctamente');
+            cerrarModal();
+            // Recargar la página para mostrar los cambios
+            window.location.reload();
+        } else {
+            alert('Error: ' + (data.error || 'No se pudo guardar el producto'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el producto en inventario');
+    });
+    
     return false;
 }
 
 // Función para editar producto
 function editarProducto(id) {
-    alert('Editar producto ID: ' + id);
+    // Buscar el producto en los datos
+    const producto = inventarioData.find(item => item.id == id);
+    if (!producto) {
+        alert('Producto no encontrado');
+        return;
+    }
+    
+    // Llenar el formulario con los datos del producto
+    document.getElementById('modalTitle').textContent = 'Editar Producto en Inventario';
+    document.getElementById('inventario_id').value = producto.id;
+    document.getElementById('stockActual').value = producto.stock_actual;
+    document.getElementById('stockMinimo').value = producto.stock_minimo;
+    document.getElementById('precioBase').value = producto.precio_base;
+    document.getElementById('descuento').value = producto.descuento || 0;
+    document.getElementById('notas').value = producto.notas || '';
+    
+    // Cargar productos y seleccionar el actual
+    fetch('../../php/empleados/listar_productos.php')
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById('producto');
+            select.innerHTML = '<option value="">Seleccionar producto...</option>';
+            data.forEach(item => {
+                const selected = item.id == producto.producto_id ? 'selected' : '';
+                select.innerHTML += `<option value="${item.id}" ${selected}>${item.nombre}</option>`;
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar productos:', error);
+        });
+    
+    // Actualizar precio final
+    actualizarPrecioFinal();
+    
+    // Mostrar el modal
+    document.getElementById('inventoryModal').style.display = 'block';
 }
 
 // Función para eliminar producto
 function eliminarProducto(id) {
-    if (confirm('¿Está seguro de eliminar este producto?')) {
-        alert('Eliminar producto ID: ' + id);
+    if (confirm('¿Está seguro de eliminar este producto del inventario?')) {
+        fetch('../../php/eliminar_inventario.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'inventario_id=' + id
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Producto eliminado del inventario correctamente');
+                // Recargar la página para mostrar los cambios
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'No se pudo eliminar el producto'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al eliminar el producto del inventario');
+        });
     }
 }
 
 // Función para reabastecer
 function reabastecer(id) {
-    alert('Reabastecer producto ID: ' + id);
+    const cantidad = prompt('Ingrese la cantidad a reabastecer:');
+    if (cantidad && !isNaN(cantidad) && parseInt(cantidad) > 0) {
+        fetch('../../php/reabastecer_inventario.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'inventario_id=' + id + '&cantidad=' + cantidad
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Stock reabastecido correctamente');
+                // Recargar la página para mostrar los cambios
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.error || 'No se pudo reabastecer el producto'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al reabastecer el producto');
+        });
+    }
 }
     </script>
 </body>

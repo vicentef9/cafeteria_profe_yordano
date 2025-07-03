@@ -43,6 +43,20 @@ try {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':id', $inventario_id, PDO::PARAM_INT);
     } else {
+        // Verificar si el producto ya existe en el inventario
+        $check_sql = "SELECT id FROM inventario WHERE producto_id = :producto_id";
+        $check_stmt = $conn->prepare($check_sql);
+        $check_stmt->bindParam(':producto_id', $producto_id, PDO::PARAM_INT);
+        $check_stmt->execute();
+        
+        if ($check_stmt->rowCount() > 0) {
+            echo json_encode([
+                "success" => false,
+                "error" => "Este producto ya existe en el inventario. Use la opción de editar para modificarlo."
+            ]);
+            exit();
+        }
+        
         // Insertar nuevo producto en inventario
         $sql = "INSERT INTO inventario (producto_id, stock_actual, stock_minimo, precio_base, descuento, notas) VALUES (:producto_id, :stock_actual, :stock_minimo, :precio_base, :descuento, :notas)";
         $stmt = $conn->prepare($sql);

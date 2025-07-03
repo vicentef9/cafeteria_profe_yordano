@@ -30,7 +30,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Proveedores - Sistema de Cafetería</title>
     <link rel="stylesheet" href="../../css/styles.css">
-    <link rel="stylesheet" href="../../css/styles-proveedores.css">
+    <link rel="stylesheet" href="../../css/styles-proveedores.css?v=1.2">
 </head>
 <body>
     <div class="dashboard-container">
@@ -52,10 +52,10 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </nav>
         </div>
         <main class="main-content">
-            <header class="dashboard-header">
+            <div class="suppliers-header">
                 <h1>Gestión de Proveedores</h1>
-                <button class="add-button" onclick="mostrarFormulario()">Agregar Proveedor</button>
-            </header>
+                <button class="add-supplier-btn" onclick="mostrarFormulario()">Agregar Proveedor</button>
+            </div>
             
             <div class="search-filters">
                 <div class="search-bar">
@@ -73,7 +73,7 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <option value="cafe">Café</option>
                             <option value="postres">Postres</option>
                             <option value="bebidas">Bebidas</option>
-                            <option value="insumos">Insumos</option>
+                            <option value="alimentos">Alimentos</option>
                         </select>
                     </div>
                     
@@ -159,8 +159,10 @@ $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <!-- Modal para agregar/editar proveedor -->
             <div id="supplierModal" class="modal">
                 <div class="modal-content">
-                    <span class="close-button" onclick="cerrarModal()">&times;</span>
-                    <h2 id="modalTitle">Agregar Proveedor</h2>
+                    <div class="modal-header">
+                        <h2 id="modalTitle">Agregar Proveedor</h2>
+                        <span class="close-button" onclick="cerrarModal()">&times;</span>
+                    </div>
                     <form id="supplierForm" class="form-grid-2col" action="../../php/guardar_proveedor.php" method="POST">
                         <input type="hidden" id="proveedor_id" name="proveedor_id">
                         <div class="form-group">

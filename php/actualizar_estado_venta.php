@@ -31,7 +31,7 @@ try {
     $conn->beginTransaction();
 
     // Obtener detalles de la venta
-    $stmt = $conn->prepare("SELECT * FROM detalle_ventas WHERE venta_id = ?");
+    $stmt = $conn->prepare("SELECT * FROM detalles_venta WHERE venta_id = ?");
     $stmt->execute([$venta_id]);
     $detalles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

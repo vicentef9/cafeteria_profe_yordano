@@ -44,7 +44,7 @@ async function cargarUsuarios() {
         empleadosTableBody.innerHTML = '';
 
         result.data.forEach(usuario => {
-            const estadoClass = usuario.estado === 'activo' ? 'bg-success' : 'bg-danger';
+            const estadoClass = usuario.estado === 'activo' ? 'activo' : 'inactivo';
             const rowClass = usuario.estado === 'inactivo' ? 'usuario-inactivo' : '';
             empleadosTableBody.innerHTML += `
                 <tr class="${rowClass}">
@@ -53,14 +53,10 @@ async function cargarUsuarios() {
                     <td>${usuario.apellido}</td>
                     <td>${usuario.email}</td>
                     <td>${usuario.rol}</td>
-                    <td><span class="badge ${estadoClass}">${usuario.estado}</span></td>
+                    <td><span class="status ${estadoClass}">${usuario.estado}</span></td>
                     <td>
-                        <button class="btn btn-primary" onclick="editarUsuario(${usuario.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-danger" onclick="eliminarUsuario(${usuario.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <button class="action-button edit" onclick="editarUsuario(${usuario.id})">Editar</button>
+                        <button class="action-button delete" onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
                     </td>
                 </tr>
             `;
