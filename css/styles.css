@@ -123,50 +123,77 @@ a:hover {
     color: #fff;
     width: 220px;
     min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
     box-shadow: 2px 0 8px rgba(0,0,0,0.04);
     position: fixed;
     left: 0;
     top: 0;
     z-index: 10;
-    padding: 20px;
+    padding: 10px 15px 15px 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .logo {
-    padding: 32px 0 16px 0;
+    padding: 10px 0 5px 0;
     text-align: center;
     font-weight: bold;
-    font-size: 1.3em;
-    letter-spacing: 1px;
+    font-size: 1.1em;
+    letter-spacing: 0.5px;
 }
 
 .nav-menu {
     list-style: none;
     padding: 0;
     margin: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .nav-menu ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .nav-menu li {
-    margin: 18px 0;
+    margin: 8px 0;
 }
 
+.nav-menu li:last-child {
+    margin-top: auto;
+    margin-bottom: 10px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Ajuste del menú cuando no hay botón de logout */
+.nav-menu li:last-child:not(.logout-btn) {
+    border-top: none !important;
+    padding-top: 8px !important;
+}
+
+/* Mejoras adicionales para el menú lateral */
 .nav-menu a {
     color: #fff;
     text-decoration: none;
-    padding: 12px 32px;
+    padding: 10px 16px;
     display: block;
-    border-radius: 25px 0 0 25px;
-    transition: background 0.2s;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+    font-weight: 500;
 }
 
 .nav-menu a.active, .nav-menu a:hover {
-    background: rgba(255,255,255,0.18);
-    font-weight: bold;
+    background: rgba(255,255,255,0.15);
+    font-weight: 600;
+    transform: translateX(5px);
 }
 
 /* Estilos para el contenido principal */
@@ -294,6 +321,43 @@ a:hover {
 
 .logout-button:hover {
     background-color: #c0392b;
+}
+
+/* Estilos para el botón de cerrar sesión */
+.logout-btn {
+    background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%) !important;
+    border: 1px solid #ff4757 !important;
+    color: #fff !important;
+    margin-top: auto !important;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(255, 71, 87, 0.3);
+    font-weight: 600;
+    font-size: 0.85em !important;
+    padding: 8px 16px !important;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #ff3742 0%, #ff2531 100%) !important;
+    border: 1px solid #ff3742 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 71, 87, 0.4);
+}
+
+.logout-btn::before {
+    content: "🚪";
+    margin-right: 6px;
+    font-size: 1em;
+}
+
+/* Separador visual antes del botón de logout */
+.logout-btn::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
 }
 
 /* =========================================
@@ -569,5 +633,19 @@ a:hover {
         padding: 24px 12px 20px 12px;
         min-height: 160px;
     }
+}
+
+/* Scrollbar personalizado para el sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
 }
 

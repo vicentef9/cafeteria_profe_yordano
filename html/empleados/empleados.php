@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,14 +18,17 @@
             </div>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="interfase_administrador.html" class="nav-item active">Inicio</a></li>
-                    <li><a href="catalogo.html" class="nav-item">Catálogo</a></li>
+                    <li><a href="interfase_administrador.php" class="nav-item active">Inicio</a></li>
+                    <li><a href="catalogo.php" class="nav-item">Catálogo</a></li>
                     <li><a href="admin_usuarios.php" class="nav-item active">Usuarios</a></li>
                     <li><a href="productos.php" class="nav-item">Productos</a></li>
                     <li><a href="inventario.php" class="nav-item">Inventario</a></li>
                     <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
                     <li><a href="ventas.php" class="nav-item">Ventas</a></li>
-                    <li><a href="soporte.html" class="nav-item">Soporte</a></li>
+                    <li><a href="soporte.php" class="nav-item">Soporte</a></li>
+                    <?php if (isset($_SESSION['usuario_id'])): ?>
+                    <li><a href="../../php/logout.php" class="nav-item logout-btn">Cerrar Sesión</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>

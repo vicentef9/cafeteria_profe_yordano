@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,14 +18,17 @@
             </div>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="interfase_administrador.html" class="nav-item active">Inicio</a></li>
-                    <li><a href="catalogo.html" class="nav-item">Catálogo</a></li>
+                    <li><a href="interfase_administrador.php" class="nav-item active">Inicio</a></li>
+                    <li><a href="catalogo.php" class="nav-item">Catálogo</a></li>
                     <li><a href="admin_usuarios.php" class="nav-item active">Usuarios</a></li>
                     <li><a href="productos.php" class="nav-item">Productos</a></li>
                     <li><a href="inventario.php" class="nav-item">Inventario</a></li>
                     <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
                     <li><a href="ventas.php" class="nav-item">Ventas</a></li>
-                    <li><a href="soporte.html" class="nav-item">Soporte</a></li>
+                    <li><a href="soporte.php" class="nav-item">Soporte</a></li>
+                    <?php if (isset($_SESSION['usuario_id'])): ?>
+                    <li><a href="../../php/logout.php" class="nav-item logout-btn">Cerrar Sesión</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
@@ -35,8 +41,10 @@
                 <select id="categoryFilter">
                     <option value="">Todas las categorías</option>
                     <option value="cafe">Café</option>
-                    <option value="bebidas">Bebidas</option>
+                    <option value="te">Té</option>
+                    <option value="comidas">Comidas</option>
                     <option value="postres">Postres</option>
+                    <option value="bebidas">Bebidas</option>
                     <option value="insumos">Insumos</option>
                 </select>
             </div>
@@ -64,7 +72,7 @@
                         <button class="card-btn" onclick="flipCard(this)">Volver</button>
                     </div>
                 </div>
-                <div class="card" data-category="postres" data-name="sandwich de jamón">
+                <div class="card" data-category="comidas" data-name="sandwich de jamón">
                     <div class="card-front">
                         <img src="../../img/sandwich-de-jamon-y-queso.webp" alt="Sandwich de Jamón" class="card-img">
                         <h3>Sandwich de Jamón</h3>
@@ -72,6 +80,61 @@
                     </div>
                     <div class="card-back">
                         <p>Pan fresco, jamón, queso y vegetales. Perfecto para el almuerzo.</p>
+                        <button class="card-btn" onclick="flipCard(this)">Volver</button>
+                    </div>
+                </div>
+                <div class="card" data-category="postres" data-name="Tarta de Manzana">
+                    <div class="card-front">
+                        <img src="../../img/tarta-de-manzana.jpg" alt="Tarta de Manazana" class="card-img">
+                        <h3>Tarta de Manzana</h3>
+                      <button class="card-btn" onclick="flipCard(this)">Ver detalles</button>
+                    </div>
+                    <div class="card-back">
+                        <p>Gran Tarta de Manzana, muy sabrosa y digna de acompañar un buen café.</p>
+                        <button class="card-btn" onclick="flipCard(this)">Volver</button>
+                    </div>
+                </div>
+                <div class="card" data-category="postres" data-name="Pie de Limon">
+                    <div class="card-front">
+                        <img src="../../img/pie-de-limon.jpg" alt="Pie de Limon" class="card-img">
+                        <h3>Pie de Limon</h3>
+                      <button class="card-btn" onclick="flipCard(this)">Ver detalles</button>
+                    </div>
+                    <div class="card-back">
+                        <p>Agridulce Pie de Limon, se vende en trozos, cada uno de gran sabor que no olvidarás jamás.</p>
+                        <button class="card-btn" onclick="flipCard(this)">Volver</button>
+                    </div>
+                </div>
+                <div class="card" data-category="postres" data-name="Helado de Chocolate">
+                    <div class="card-front">
+                        <img src="../../img/helado-chocolate.jpg" alt="Helado de Chocolate" class="card-img">
+                        <h3>Helado de Chocolate</h3>
+                      <button class="card-btn" onclick="flipCard(this)">Ver detalles</button>
+                    </div>
+                    <div class="card-back">
+                        <p>Helado sabor chocolate, perfecto para acompañar aquellos calurosos dias de verano.</p>
+                        <button class="card-btn" onclick="flipCard(this)">Volver</button>
+                    </div>
+                </div>
+                <div class="card" data-category="te" data-name="Té de Manzanilla">
+                    <div class="card-front">
+                        <img src="../../img/te-de-manzanilla.jpg" alt="Té de Manzanilla" class="card-img">
+                        <h3>Té de Manzanilla</h3>
+                      <button class="card-btn" onclick="flipCard(this)">Ver detalles</button>
+                    </div>
+                    <div class="card-back">
+                        <p>Té sabor manzanilla, para serenar cuerpo y mente.</p>
+                        <button class="card-btn" onclick="flipCard(this)">Volver</button>
+                    </div>
+                </div>
+                <div class="card" data-category="cafe" data-name="Café Espresso">
+                    <div class="card-front">
+                        <img src="../../img/cafe-espresso.jpg" alt="Café Espresso" class="card-img">
+                        <h3>Café Espresso</h3>
+                      <button class="card-btn" onclick="flipCard(this)">Ver detalles</button>
+                    </div>
+                    <div class="card-back">
+                        <p>Rápido y de sabor concentrado, quedarás despierto como si ubieras dormido 2 dias seguidos.</p>
                         <button class="card-btn" onclick="flipCard(this)">Volver</button>
                     </div>
                 </div>

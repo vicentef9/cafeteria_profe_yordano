@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+// Verificar si el usuario está logueado (opcional para esta página)
+// if (!isset($_SESSION['usuario_id'])) {
+//     header('Location: ../autenticacion/login.php');
+//     exit();
+// }
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,14 +24,17 @@
             </div>
             <nav class="nav-menu">
                 <ul>
-                    <li><a href="interfase_administrador.html" class="nav-item active">Inicio</a></li>
-                    <li><a href="catalogo.html" class="nav-item">Catálogo</a></li>
+                    <li><a href="interfase_administrador.php" class="nav-item active">Inicio</a></li>
+                    <li><a href="catalogo.php" class="nav-item">Catálogo</a></li>
                     <li><a href="admin_usuarios.php" class="nav-item active">Usuarios</a></li>
                     <li><a href="productos.php" class="nav-item">Productos</a></li>
                     <li><a href="inventario.php" class="nav-item">Inventario</a></li>
                     <li><a href="proveedores.php" class="nav-item">Proveedores</a></li>
                     <li><a href="ventas.php" class="nav-item">Ventas</a></li>
-                    <li><a href="soporte.html" class="nav-item">Soporte</a></li>
+                    <li><a href="soporte.php" class="nav-item">Soporte</a></li>
+                    <?php if (isset($_SESSION['usuario_id'])): ?>
+                    <li><a href="../../php/logout.php" class="nav-item logout-btn">Cerrar Sesión</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
@@ -42,25 +54,31 @@
                 <div class="dashboard-card">
                     <h3>Productos</h3>
                     <p>Gestiona el catálogo de productos</p>
-                    <a href="../empleados/productos.php" class="card-link">Acceder</a>
+                    <a href="productos.php" class="card-link">Acceder</a>
                 </div>
                 
                 <div class="dashboard-card">
                     <h3>Inventario</h3>
                     <p>Control de existencias y descuentos</p>
-                    <a href="../empleados/inventario.php" class="card-link">Acceder</a>
+                    <a href="inventario.php" class="card-link">Acceder</a>
                 </div>
                 
                 <div class="dashboard-card">
                     <h3>Proveedores</h3>
-                    <p>Gestión de proveedores</p>
-                    <a href="../empleados/proveedores.php" class="card-link">Acceder</a>
+                    <p>Gestiona los proveedores de productos</p>
+                    <a href="proveedores.php" class="card-link">Acceder</a>
                 </div>
                 
                 <div class="dashboard-card">
                     <h3>Ventas</h3>
-                    <p>Registro y análisis de ventas</p>
-                    <a href="../empleados/ventas.php" class="card-link">Acceder</a>
+                    <p>Registro y control de ventas</p>
+                    <a href="ventas.php" class="card-link">Acceder</a>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3>Soporte</h3>
+                    <p>Preguntas frecuentes y ayuda</p>
+                    <a href="soporte.php" class="card-link">Acceder</a>
                 </div>
             </div>
         </main>
