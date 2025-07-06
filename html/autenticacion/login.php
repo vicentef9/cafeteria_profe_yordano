@@ -40,9 +40,6 @@ session_start();
                 </div>
                 <button type="submit" class="login-button">Iniciar Sesión</button>
             </form>
-            <div class="register-link">
-                <p>¿No tienes una cuenta? <a href="registro.php" class="register-button">Registrarse</a></p>
-            </div>
         </div>
     </div>
 </body>
